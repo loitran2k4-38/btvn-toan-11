@@ -64,4 +64,4 @@ Công thức nằm trong dòng không tự xuống dòng, nên chuỗi biến đ
 - Công thức viết LaTeX trong `$...$`, dùng `` R`...` `` (String.raw) để không phải gõ `\\`.
 - Ô điền số nhận: `12`, `-4`, `47,2`, `47.2`, `8/15`, `1.747.625`.
 
-Bài làm của học sinh lưu trong localStorage (khoá `btvn-<slug>`, tên ở `btvn-ten-hoc-sinh`), nên đổi `slug` của bài đã giao sẽ làm mất tiến độ.
+Bài làm của học sinh lưu trong localStorage (khoá `btvn-<slug>`), nên đổi `slug` của bài đã giao sẽ làm mất tiến độ.

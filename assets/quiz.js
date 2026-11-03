@@ -4,7 +4,6 @@
   const C = window.CATALOG;
   const LV = { de: ["Dễ", "lv-de"], vua: ["Vừa", "lv-vua"], kho: ["Khó", "lv-kho"] };
   const LETTERS = ["A", "B", "C", "D", "E"];
-  const NAME_KEY = "btvn-ten-hoc-sinh";
   const $ = id => document.getElementById(id);
 
   // ---------- Mẫu HTML cho phần lý thuyết (dùng trong data/<slug>.js)
@@ -69,15 +68,13 @@
     const QS = L.questions, PARTS = L.parts;
     const KEY = "btvn-" + meta.slug;
 
-    let state = { name: "", ans: {} };
+    let state = { ans: {} };
     try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.ans) state = s; } catch (e) {}
-    try { const n = localStorage.getItem(NAME_KEY); if (n) state.name = n; } catch (e) {}
     function save() {
       try {
         state.total = QS.length;
         state.updated = Date.now();
         localStorage.setItem(KEY, JSON.stringify(state));
-        if (state.name) localStorage.setItem(NAME_KEY, state.name);
       } catch (e) {}
     }
 
@@ -310,7 +307,6 @@
       const notDone = QS.filter(q => !(state.ans[q.id] && "v" in state.ans[q.id]));
       const lines = [
         `BÀI TẬP VỀ NHÀ: ${meta.so.toUpperCase()}. ${meta.title.toUpperCase()}`,
-        "Học sinh: " + (state.name || "(chưa nhập tên)"),
         `Điểm: ${ok.length}/${total} câu đúng`,
         "Câu sai: " + nums(bad),
         "Câu dùng gợi ý: " + nums(hinted)
@@ -320,9 +316,6 @@
       $("report").textContent = lines.join("\n");
     }
 
-    const nameInput = $("studentName");
-    nameInput.value = state.name || "";
-    nameInput.addEventListener("input", () => { state.name = nameInput.value.trim(); save(); updateProgress(); });
 
     $("copyBtn").addEventListener("click", () => {
       const txt = $("report").textContent;
@@ -350,7 +343,7 @@
         return;
       }
       clearTimeout(timer); armed = false; resetBtn.textContent = "Làm lại từ đầu";
-      state = { name: state.name, ans: {} }; save();
+      state = { ans: {} }; save();
       render(); typeset($("parts"));
       window.scrollTo({ top: 0, behavior: "smooth" });
     });

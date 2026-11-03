@@ -64,12 +64,9 @@
   const open = rows.filter(r => r.p.state !== "soon");
 
   // ---------- Lời chào + tổng kết
-  let name = "";
-  try { name = localStorage.getItem("btvn-ten-hoc-sinh") || ""; } catch (e) {}
   const nDone = open.filter(r => r.p.state === "done").length;
   const nDoing = open.filter(r => r.p.state === "doing").length;
   const hello = $("hello");
-  if (name) hello.append(Object.assign(document.createElement("span"), { textContent: "Chào " + name + "!" }));
   const sum = document.createElement("span");
   sum.innerHTML = `Đã xong <b>${nDone}</b>/<b>${open.length}</b> bài` + (nDoing ? ` · đang làm <b>${nDoing}</b>` : "");
   hello.append(sum);

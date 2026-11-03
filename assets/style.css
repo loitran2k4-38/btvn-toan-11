@@ -79,9 +79,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 h1 { overflow-wrap: anywhere; font-family: var(--font-display); font-size: clamp(30px, 6vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
 h1 .un { color: var(--accent); font-weight: 600; display: inline-block; }
 .cover p { margin: 0; color: var(--muted); max-width: 60ch; }
-.name-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.name-row label { font-weight: 600; font-size: 15px; }
-.name-row input { flex: 1 1 220px; min-width: 0; }
 
 input[type="text"] {
   font: inherit; color: var(--ink); background: var(--sheet);
