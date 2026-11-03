@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bài tập Toán 11</title>
+<meta name="description" content="Bài tập về nhà Toán 11: Dãy số, Cấp số cộng, Cấp số nhân.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="cover">
+    <div class="eyebrow">Toán 11 · Chương II</div>
+    <h1>Dãy số, cấp số cộng <span class="un">&amp;</span> cấp số nhân</h1>
+    <p>Bài tập về nhà. Chọn bài thầy giao, làm xong thì sao chép kết quả ở cuối trang và gửi cho thầy.</p>
+  </header>
+  <div class="lessons" id="lessons"></div>
+  <p class="foot">Bài làm được lưu trên máy của em, nên hãy dùng cùng một điện thoại hoặc máy tính khi làm tiếp.</p>
+</main>
+<script src="data/lessons.js"></script>
+<script>
+(function () {
+  const host = document.getElementById("lessons");
+  window.LESSONS.forEach(l => {
+    const open = l.status === "open";
+    const card = document.createElement(open ? "a" : "div");
+    card.className = "lesson" + (open ? "" : " soon");
+    if (open) card.href = "bai/" + l.slug + ".html";
+    let state = "Sắp có", cls = "";
+    if (open) {
+      state = "Bắt đầu →"; cls = "new";
+      try {
+        const s = JSON.parse(localStorage.getItem("btvn-" + l.slug) || "null");
+        if (s && s.ans && s.total) {
+          const done = Object.values(s.ans).filter(r => "v" in r);
+          const ok = done.filter(r => r.ok).length;
+          if (done.length >= s.total) { state = `Xong · ${ok}/${s.total} đúng`; cls = "done"; }
+          else if (done.length) { state = `Đang làm · ${done.length}/${s.total}`; cls = "doing"; }
+        }
+      } catch (e) {}
+    }
+    card.innerHTML = `<span class="so"></span><h2></h2><span class="state ${cls}"></span><p></p>`;
+    card.querySelector(".so").textContent = l.so;
+    card.querySelector("h2").textContent = l.title;
+    card.querySelector(".state").textContent = state;
+    card.querySelector("p").textContent = l.desc;
+    host.append(card);
+  });
+})();
+</script>
+</body>
+</html>
