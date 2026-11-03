@@ -435,3 +435,9 @@ a.lesson:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px;
 @media (max-width: 520px) {
   .lesson .pills { grid-row: auto; grid-column: 1 / -1; justify-content: flex-start; max-width: none; order: 4; }
 }
+
+/* Khung cho phép cuộn ngang công thức dài, nhưng không bao giờ hiện thanh cuộn dọc
+   (MathJax đôi khi nhô ra 1px làm Chrome/Windows hiện mũi tên cuộn) */
+.q-text, .box, .recap, .note, .def, .ex-q, .ex-sol, .formula, .tbl, .opt,
+.th-body > p, .th-body > ul, .th-body > ol { overflow-y: hidden; }
+.q-text, .ex-q, .ex-sol, .th-body > p { padding-block: 2px; }

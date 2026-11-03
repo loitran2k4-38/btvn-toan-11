@@ -29,7 +29,7 @@
 
   const meta = flat[idx];
   const script = document.createElement("script");
-  script.src = "data/" + meta.slug + ".js";
+  script.src = "data/" + meta.slug + ".js?v=" + (window.APP_VERSION || Date.now());
   script.onload = () => window.LESSON ? start(window.LESSON) : notFound();
   script.onerror = notFound;
   document.body.append(script);

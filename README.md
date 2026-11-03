@@ -27,7 +27,7 @@ bai/*.html          Chỉ để chuyển hướng các link cũ, không cần t�
    ```
    `formula` không bắt buộc. Thêm `soon: true` để bài hiện "Sắp có" khi chưa soạn xong.
 
-Push lên `main`, khoảng 1 phút sau Pages tự cập nhật. Link bài: `.../bai.html?b=<slug>`.
+Chạy `sh bump-version.sh` (đổi số phiên bản trong link CSS/JS để trình duyệt học sinh không dùng bản cũ), rồi push lên `main`; khoảng 1 phút sau Pages tự cập nhật. Link bài: `.../bai.html?b=<slug>`.
 
 ## Thêm một chương
 
