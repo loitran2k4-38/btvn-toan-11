@@ -143,5 +143,255 @@ const SUMMARY = R`<ul>
   <li>Tổng: $S_n = \dfrac{n(u_1 + u_n)}{2}$ $= \dfrac{n\big[2u_1 + (n-1)d\big]}{2}$.</li>
 </ul>`;
 
-window.LESSON = { parts: PARTS, questions: QS, theory: THEORY, summary: SUMMARY };
+// ---------- ĐỀ 2
+const QS2 = [
+  { id: "a1", part: "A", lv: "de", type: "mc", correct: 0,
+    text: R`Dãy số nào sau đây là cấp số cộng?`,
+    opts: [R`$2;\ 5;\ 8;\ 11;\ 14$`, R`$2;\ 4;\ 8;\ 16;\ 32$`, R`$1;\ 3;\ 6;\ 10;\ 15$`, R`$5;\ 3;\ 2;\ 0;\ -1$`],
+    hint: R`Lấy số sau trừ số trước. Dãy nào có tất cả các hiệu bằng nhau?`,
+    sol: [R`$2;\ 5;\ 8;\ 11;\ 14$ có các hiệu đều bằng $3$: là cấp số cộng.`, R`Các dãy còn lại có hiệu thay đổi: $2, 4, 8, 16$; $2, 3, 4, 5$; $-2, -1, -2, -1$.`] },
+  { id: "a2", part: "A", lv: "de", type: "num", ans: 8,
+    text: R`Cho cấp số cộng $(u_n)$ có $u_1 = -4$ và công sai $d = 3$. Tính $u_5$.`,
+    hint: R`$u_5 = u_1 + 4d$.`,
+    sol: [R`$u_5 = -4 + 4\cdot 3 = 8$.`] },
+  { id: "a3", part: "A", lv: "vua", type: "mc", correct: 0,
+    text: R`Dãy số $(u_n)$ nào sau đây là cấp số cộng?`,
+    opts: [R`$u_n = 5 - 3n$`, R`$u_n = n^2 + 1$`, R`$u_n = 2^n$`, R`$u_n = \dfrac{1}{n}$`],
+    hint: R`Tính $u_{n+1} - u_n$ cho từng dãy.`,
+    sol: [R`$u_{n+1} - u_n = \big[5 - 3(n+1)\big] - (5 - 3n) = -3$ không đổi: là cấp số cộng với $d = -3$.`, R`$n^2 + 1$ có hiệu $2n + 1$; $2^n$ có hiệu $2^n$; $\dfrac{1}{n}$ có hiệu $-\dfrac{1}{n(n+1)}$. Các hiệu này thay đổi theo $n$.`] },
+  { id: "a4", part: "A", lv: "vua", type: "num", ans: 4, label: "$x =$",
+    text: R`Tìm $x$ để ba số $x - 1,\ 2x + 1,\ 4x - 1$ (theo thứ tự đó) lập thành một cấp số cộng.`,
+    hint: R`$a, b, c$ lập thành cấp số cộng $\Leftrightarrow a + c = 2b$.`,
+    sol: [R`$(x - 1) + (4x - 1) = 2(2x + 1)$ $\Leftrightarrow 5x - 2 = 4x + 2$ $\Leftrightarrow x = 4$.`, R`Thử lại: $3;\ 9;\ 15$, công sai $6$. Đúng.`] },
+  { id: "b1", part: "B", lv: "de", type: "num", ans: -21,
+    text: R`Cho cấp số cộng có $u_1 = 7$ và $d = -2$. Tính $u_{15}$.`,
+    hint: R`$u_{15} = u_1 + 14d$.`,
+    sol: [R`$u_{15} = 7 + 14\cdot(-2) = 7 - 28 = -21$.`] },
+  { id: "b2", part: "B", lv: "de", type: "mc", correct: 0,
+    text: R`Cho cấp số cộng $10;\ 7;\ 4;\ 1;\ \dots$ Công thức số hạng tổng quát là:`,
+    opts: [R`$u_n = 13 - 3n$`, R`$u_n = 10 - 3n$`, R`$u_n = 3n + 7$`, R`$u_n = 10\cdot(-3)^{n-1}$`],
+    hint: R`$u_1 = 10$, $d = -3$. Thay vào $u_n = u_1 + (n - 1)d$.`,
+    sol: [R`$u_n = 10 + (n - 1)(-3) = 13 - 3n$.`, R`Thử lại: $u_1 = 10,\ u_2 = 7$. Đúng.`] },
+  { id: "b3", part: "B", lv: "vua", type: "num", ans: -1, label: "$u_1 =$",
+    text: R`Cho cấp số cộng có $u_3 = 7$ và $u_{10} = 35$. Tìm $u_1$.`,
+    hint: R`$u_{10} - u_3 = 7d$.`,
+    sol: [R`$7d = 35 - 7 = 28 \Rightarrow d = 4$.`, R`$u_1 = u_3 - 2d = 7 - 8 = -1$.`] },
+  { id: "b4", part: "B", lv: "vua", type: "num", ans: 505, label: "Số hạng thứ",
+    text: R`Cho cấp số cộng có $u_n = 4n + 5$. Số $2025$ là số hạng thứ bao nhiêu?`,
+    hint: R`Giải $4n + 5 = 2025$.`,
+    sol: [R`$4n + 5 = 2025 \Leftrightarrow 4n = 2020 \Leftrightarrow n = 505$.`] },
+  { id: "b5", part: "B", lv: "kho", type: "num", ans: 59, label: "$u_{20} =$",
+    text: R`Cho cấp số cộng có công sai dương, $u_2 + u_4 = 16$ và $u_1\cdot u_5 = 28$. Tính $u_{20}$.`,
+    hint: R`$u_2 + u_4 = 2u_3$ nên $u_3 = 8$. Viết $u_1 = 8 - 2d$, $u_5 = 8 + 2d$.`,
+    sol: [R`$u_3 = \dfrac{u_2 + u_4}{2} = 8$.`, R`$(8 - 2d)(8 + 2d) = 28 \Leftrightarrow 64 - 4d^2 = 28 \Leftrightarrow d^2 = 9$. Vì $d > 0$ nên $d = 3$.`, R`$u_1 = 8 - 6 = 2$, $u_{20} = 2 + 19\cdot 3 = 59$.`] },
+  { id: "c1", part: "C", lv: "de", type: "num", ans: 190, label: "$S_{10} =$",
+    text: R`Cho cấp số cộng có $u_1 = 1$, $d = 4$. Tính $S_{10}$.`,
+    hint: R`$S_{10} = \dfrac{10\,(2u_1 + 9d)}{2}$.`,
+    sol: [R`$S_{10} = \dfrac{10\,(2 + 36)}{2} = 5\cdot 38 = 190$.`] },
+  { id: "c2", part: "C", lv: "vua", type: "num", ans: 9, label: "$u_1 =$",
+    text: R`Tổng $15$ số hạng đầu của một cấp số cộng có công sai $2$ là $345$. Tìm số hạng đầu.`,
+    hint: R`$345 = \dfrac{15\,(2u_1 + 14\cdot 2)}{2}$.`,
+    sol: [R`$690 = 15\,(2u_1 + 28) \Rightarrow 2u_1 + 28 = 46 \Rightarrow u_1 = 9$.`] },
+  { id: "c3", part: "C", lv: "vua", type: "num", ans: 610, label: "Tổng:",
+    text: R`Tính tổng $S = 2 + 5 + 8 + \dots + 59$.`,
+    hint: R`Đây là cấp số cộng $u_1 = 2$, $d = 3$, số hạng cuối $59$. Tìm số số hạng $n$ trước.`,
+    sol: [R`$2 + (n - 1)\cdot 3 = 59 \Rightarrow n = 20$.`, R`$S = \dfrac{20\,(2 + 59)}{2} = 610$.`] },
+  { id: "c4", part: "C", lv: "kho", type: "num", ans: 10, label: "$n =$",
+    text: R`Cấp số cộng có $u_1 = 2$, $d = 3$. Tổng của bao nhiêu số hạng đầu bằng $155$?`,
+    hint: R`$S_n = \dfrac{n\,[4 + 3(n - 1)]}{2} = \dfrac{n(3n + 1)}{2} = 155$.`,
+    sol: [R`$n(3n + 1) = 310 \Leftrightarrow 3n^2 + n - 310 = 0$.`, R`$\Delta = 1 + 3720 = 3721 = 61^2$, $n = \dfrac{-1 + 61}{6} = 10$.`] },
+  { id: "d1", part: "D", lv: "de", type: "num", ans: 39, label: "Số ghế:", unit: "ghế",
+    text: R`Một rạp hát có $20$ hàng ghế. Hàng thứ nhất có $20$ ghế, mỗi hàng sau hơn hàng trước $1$ ghế. Hàng cuối cùng có bao nhiêu ghế?`,
+    hint: R`Cấp số cộng $u_1 = 20$, $d = 1$. Tính $u_{20}$.`,
+    sol: [R`$u_{20} = 20 + 19\cdot 1 = 39$ ghế.`] },
+  { id: "d2", part: "D", lv: "vua", type: "num", ans: 35.4, tol: 0.001, label: "Số tiền:", unit: "triệu đồng", show: "35,4",
+    text: R`Rạp hát ở câu trên bán hết vé, mỗi vé $60$ nghìn đồng. Rạp thu được bao nhiêu triệu đồng?`,
+    hint: R`Tính tổng số ghế $S_{20}$ rồi nhân với giá vé.`,
+    sol: [R`$S_{20} = \dfrac{20\,(20 + 39)}{2} = 590$ ghế.`, R`Số tiền: $590\cdot 60 = 35\,400$ nghìn đồng $= 35{,}4$ triệu đồng.`] },
+  { id: "d3", part: "D", lv: "kho", type: "num", ans: 8, label: "Số năm:", unit: "năm",
+    text: R`Anh Nam nhận lương khởi điểm $35\,000$ đô la một năm, mỗi năm được tăng thêm $1\,400$ đô la. Sau bao nhiêu năm làm việc thì tổng lương anh nhận được là $319\,200$ đô la?`,
+    hint: R`Lương các năm là cấp số cộng $u_1 = 35\,000$, $d = 1\,400$. Giải $S_n = 319\,200$.`,
+    sol: [R`$\dfrac{n\,[70\,000 + 1\,400(n - 1)]}{2} = 319\,200$ $\Leftrightarrow n^2 + 49n - 456 = 0$ (chia hai vế cho $700$).`, R`$\Delta = 2401 + 1824 = 4225 = 65^2$, $n = \dfrac{-49 + 65}{2} = 8$ năm.`] }
+];
+
+// ---------- ĐỀ 3
+const QS3 = [
+  { id: "a1", part: "A", lv: "de", type: "mc", correct: 0,
+    text: R`Cấp số cộng $3;\ 7;\ 11;\ 15;\ \dots$ có công sai là:`,
+    opts: [R`$d = 4$`, R`$d = 3$`, R`$d = 7$`, R`$d = -4$`],
+    hint: R`$d = u_2 - u_1$.`,
+    sol: [R`$d = 7 - 3 = 4$.`] },
+  { id: "a2", part: "A", lv: "de", type: "num", ans: 27,
+    text: R`Cho cấp số cộng có $u_1 = 2$, $d = 5$. Tính $u_6$.`,
+    hint: R`$u_6 = u_1 + 5d$.`,
+    sol: [R`$u_6 = 2 + 5\cdot 5 = 27$.`] },
+  { id: "a3", part: "A", lv: "vua", type: "mc", correct: 3,
+    text: R`Dãy số nào sau đây <b>không</b> là cấp số cộng?`,
+    opts: [R`$u_n = 3n + 1$`, R`$u_n = 7 - 2n$`, R`$u_n = \dfrac{n}{2}$`, R`$u_n = n^2 - n$`],
+    hint: R`Dãy nào có hiệu $u_{n+1} - u_n$ phụ thuộc vào $n$?`,
+    sol: [R`$u_n = n^2 - n$: $u_1 = 0,\ u_2 = 2,\ u_3 = 6$, hiệu $2$ rồi $4$, nên không là cấp số cộng.`, R`Ba dãy còn lại có hiệu lần lượt là $3$, $-2$, $\dfrac{1}{2}$ (không đổi).`] },
+  { id: "a4", part: "A", lv: "vua", type: "num", ans: 2, label: "$x =$",
+    text: R`Tìm $x$ để ba số $x + 2,\ 2x + 3,\ 5x$ (theo thứ tự đó) lập thành một cấp số cộng.`,
+    hint: R`$a + c = 2b$.`,
+    sol: [R`$(x + 2) + 5x = 2(2x + 3)$ $\Leftrightarrow 6x + 2 = 4x + 6$ $\Leftrightarrow x = 2$.`, R`Thử lại: $4;\ 7;\ 10$. Đúng.`] },
+  { id: "b1", part: "B", lv: "de", type: "num", ans: 30,
+    text: R`Cho cấp số cộng có $u_1 = 100$, $d = -7$. Tính $u_{11}$.`,
+    hint: R`$u_{11} = u_1 + 10d$.`,
+    sol: [R`$u_{11} = 100 + 10\cdot(-7) = 30$.`] },
+  { id: "b2", part: "B", lv: "de", type: "mc", correct: 0,
+    text: R`Cấp số cộng có $u_n = 5n - 2$. Số hạng đầu và công sai là:`,
+    opts: [R`$u_1 = 3,\ d = 5$`, R`$u_1 = -2,\ d = 5$`, R`$u_1 = 5,\ d = -2$`, R`$u_1 = 3,\ d = -2$`],
+    hint: R`Thay $n = 1$ để được $u_1$; $d = u_2 - u_1$.`,
+    sol: [R`$u_1 = 5 - 2 = 3$, $u_2 = 8$, nên $d = 5$.`] },
+  { id: "b3", part: "B", lv: "vua", type: "num", ans: 74, label: "$u_{20} =$",
+    text: R`Cho cấp số cộng có $u_4 = 10$ và $u_9 = 30$. Tính $u_{20}$.`,
+    hint: R`$u_9 - u_4 = 5d$.`,
+    sol: [R`$5d = 20 \Rightarrow d = 4$; $u_1 = u_4 - 3d = -2$.`, R`$u_{20} = -2 + 19\cdot 4 = 74$.`] },
+  { id: "b4", part: "B", lv: "vua", type: "num", ans: 26, label: "Số hạng thứ",
+    text: R`Cho cấp số cộng có $u_1 = -3$, $d = 4$. Số $97$ là số hạng thứ bao nhiêu?`,
+    hint: R`Giải $-3 + (n - 1)\cdot 4 = 97$.`,
+    sol: [R`$(n - 1)\cdot 4 = 100 \Leftrightarrow n - 1 = 25 \Leftrightarrow n = 26$.`] },
+  { id: "b5", part: "B", lv: "kho", type: "num", ans: -295, label: "$u_{100} =$",
+    text: R`Cho cấp số cộng thỏa mãn $\begin{cases} u_5 + 3u_3 - u_2 = -21 \\ 3u_7 - 2u_4 = -34 \end{cases}$. Tính $u_{100}$.`,
+    hint: R`Viết mọi số hạng theo $u_1$ và $d$, ví dụ $u_5 = u_1 + 4d$.`,
+    sol: [R`Phương trình 1: $(u_1 + 4d) + 3(u_1 + 2d) - (u_1 + d) = 3u_1 + 9d = -21$, tức $u_1 + 3d = -7$.`, R`Phương trình 2: $3(u_1 + 6d) - 2(u_1 + 3d) = u_1 + 12d = -34$.`, R`Trừ vế: $9d = -27 \Rightarrow d = -3$, $u_1 = 2$.`, R`$u_{100} = 2 + 99\cdot(-3) = -295$.`] },
+  { id: "c1", part: "C", lv: "de", type: "num", ans: 136, label: "$S_8 =$",
+    text: R`Tính tổng $8$ số hạng đầu của cấp số cộng $3;\ 7;\ 11;\ \dots$`,
+    hint: R`$u_1 = 3$, $d = 4$, $S_8 = \dfrac{8\,(2u_1 + 7d)}{2}$.`,
+    sol: [R`$S_8 = \dfrac{8\,(6 + 28)}{2} = 4\cdot 34 = 136$.`] },
+  { id: "c2", part: "C", lv: "vua", type: "num", ans: 1425, label: "$S_{30} =$",
+    text: R`Cho cấp số cộng $u_n = 3n + 1$. Tính $S_{30}$.`,
+    hint: R`Tính $u_1$ và $u_{30}$.`,
+    sol: [R`$u_1 = 4$, $u_{30} = 91$.`, R`$S_{30} = \dfrac{30\,(4 + 91)}{2} = 15\cdot 95 = 1425$.`] },
+  { id: "c3", part: "C", lv: "vua", type: "num", ans: 246, label: "$S_{12} =$",
+    text: R`Cấp số cộng có $u_1 = 4$ và $u_{12} = 37$. Tính tổng $12$ số hạng đầu.`,
+    hint: R`Đã biết số hạng đầu và cuối: $S_{12} = \dfrac{12\,(u_1 + u_{12})}{2}$.`,
+    sol: [R`$S_{12} = \dfrac{12\,(4 + 37)}{2} = 6\cdot 41 = 246$.`] },
+  { id: "c4", part: "C", lv: "kho", type: "num", ans: 41, label: "$u_{10} =$",
+    text: R`Tổng $n$ số hạng đầu của một cấp số cộng là $S_n = 2n^2 + 3n$. Tính $u_{10}$.`,
+    hint: R`$u_{10} = S_{10} - S_9$.`,
+    sol: [R`$S_{10} = 200 + 30 = 230$, $S_9 = 162 + 27 = 189$.`, R`$u_{10} = 230 - 189 = 41$.`] },
+  { id: "d1", part: "D", lv: "de", type: "num", ans: 48, label: "Số ghế:", unit: "ghế",
+    text: R`Hàng ghế đầu của một hội trường có $15$ ghế, mỗi hàng sau nhiều hơn hàng trước $3$ ghế. Hàng thứ $12$ có bao nhiêu ghế?`,
+    hint: R`Cấp số cộng $u_1 = 15$, $d = 3$. Tính $u_{12}$.`,
+    sol: [R`$u_{12} = 15 + 11\cdot 3 = 48$ ghế.`] },
+  { id: "d2", part: "D", lv: "vua", type: "num", ans: 234, label: "Số viên gạch:", unit: "viên",
+    text: R`Một bức tường trang trí hình thang rộng $2{,}4$ m ở đáy và $1{,}2$ m ở đỉnh, ốp bằng gạch vuông cạnh $10$ cm. Mỗi hàng phía trên ít hơn hàng ngay dưới $1$ viên. Cần bao nhiêu viên gạch?`,
+    hint: R`Hàng đáy có $240 : 10 = 24$ viên, hàng đỉnh có $12$ viên. Có bao nhiêu hàng?`,
+    sol: [R`Hàng đáy $24$ viên, hàng đỉnh $12$ viên, mỗi hàng giảm $1$ viên, nên có $24 - 12 + 1 = 13$ hàng.`, R`Tổng: $S_{13} = \dfrac{13\,(24 + 12)}{2} = 234$ viên.`] },
+  { id: "d3", part: "D", lv: "kho", type: "num", ans: 89, label: "Số tiếng:", unit: "tiếng",
+    text: R`Chuông đồng hồ đánh số tiếng đúng bằng số giờ khi đến giờ đúng, và cứ mỗi lúc $30$ phút (không phải giờ đúng) thì đánh $1$ tiếng. Từ lúc $1$ giờ đêm đến lúc $12$ giờ trưa (tính cả hai lúc đó), chuông đánh tất cả bao nhiêu tiếng?`,
+    hint: R`Tách làm hai phần: các giờ đúng $1 + 2 + \dots + 12$, và các lúc $1$ giờ $30$, $2$ giờ $30$, …, $11$ giờ $30$.`,
+    sol: [R`Giờ đúng: $1 + 2 + \dots + 12 = \dfrac{12\cdot 13}{2} = 78$ tiếng.`, R`Các lúc rưỡi từ $1$ giờ $30$ đến $11$ giờ $30$: $11$ lần, mỗi lần $1$ tiếng.`, R`Tổng: $78 + 11 = 89$ tiếng.`] }
+];
+
+// ---------- LUYỆN TẬP: sinh đề theo mã
+function gen(G, r) {
+  const { t, lin, par, list, mc } = G;
+  const Q = [];
+  const sgn = v => (v < 0 ? "- " + Math.abs(v) : "+ " + v);
+
+  // A1. Nhận biết cấp số cộng
+  { const a = r.int(-5, 9), d = r.pick([2, 3, 4, 5, -2, -3, -4]);
+    const ap = [0, 1, 2, 3, 4].map(i => a + i * d);
+    const bump = ap.slice(); bump[2] += r.pick([1, -1]);
+    const s = r.pick([1, 2, 3]), geo = [1, 2, 4, 8, 16].map(x => x * s);
+    const tri = [0, 1, 3, 6, 10].map(x => a + x);
+    const m = mc(r, R`$${list(ap)}$`, [bump, geo, tri].map(l => R`$${list(l)}$`));
+    Q.push(Object.assign({ part: "A", lv: "de", type: "mc",
+      text: R`Dãy số nào sau đây là cấp số cộng?`,
+      hint: R`Lấy số sau trừ số trước. Dãy nào có tất cả các hiệu bằng nhau?`,
+      sol: [R`$${list(ap)}$ có các hiệu đều bằng $${d}$: là cấp số cộng với $d = ${d}$.`, R`Các dãy còn lại có hiệu thay đổi.`] }, m)); }
+
+  // A2. Tính u_k
+  { const a = r.int(-9, 9), d = r.nz(-6, 6), k = r.int(5, 15), v = a + (k - 1) * d;
+    Q.push({ part: "A", lv: "de", type: "num", ans: v, label: R`$u_{${k}} =$`,
+      text: R`Cho cấp số cộng có $u_1 = ${a}$ và $d = ${d}$. Tính $u_{${k}}$.`,
+      hint: R`$u_{${k}} = u_1 + ${k - 1}d$.`,
+      sol: [R`$u_{${k}} = ${a} + ${k - 1}\cdot ${par(d)} = ${v}$.`] }); }
+
+  // A3. Tìm x để ba số lập thành cấp số cộng
+  { let p1, p2, p3;
+    do { p1 = r.int(1, 5); p2 = r.int(1, 5); p3 = r.int(1, 5); } while (p1 + p3 - 2 * p2 === 0);
+    const x0 = r.int(-4, 6), A = r.int(-5, 8), d = r.nz(-5, 6);
+    const v = [A, A + d, A + 2 * d], P = [p1, p2, p3], Qc = v.map((val, i) => val - P[i] * x0);
+    const e = i => lin(P[i], Qc[i], "x");
+    const L = P[0] + P[2] - 2 * P[1], Rr = 2 * Qc[1] - Qc[0] - Qc[2];
+    Q.push({ part: "A", lv: "vua", type: "num", ans: x0, label: "$x =$",
+      text: R`Tìm $x$ để ba số $${e(0)},\ ${e(1)},\ ${e(2)}$ (theo thứ tự đó) lập thành một cấp số cộng.`,
+      hint: R`$a, b, c$ lập thành cấp số cộng $\Leftrightarrow a + c = 2b$.`,
+      sol: [R`$(${e(0)}) + (${e(2)}) = 2(${e(1)})$`, R`$\Leftrightarrow ${lin(L, 0, "x")} = ${Rr} \Leftrightarrow x = ${x0}$.`, R`Thử lại: $${list(v)}$ có công sai $${d}$.`] }); }
+
+  // B1. Công thức tổng quát từ dãy liệt kê
+  { const a = r.nz(-5, 9), d = r.pick([2, 3, 4, 5, -2, -3, -4]);
+    const right = lin(d, a - d);
+    const w = [lin(d, a), lin(-d, a + d), lin(a === d ? a + 1 : a, d)];
+    const m = mc(r, R`$u_n = ${right}$`, w.map(s => R`$u_n = ${s}$`));
+    Q.push(Object.assign({ part: "B", lv: "de", type: "mc",
+      text: R`Cho cấp số cộng $${list([a, a + d, a + 2 * d, a + 3 * d])};\ \dots$ Công thức số hạng tổng quát là:`,
+      hint: R`Tìm $u_1$ và $d$, rồi thay vào $u_n = u_1 + (n - 1)d$.`,
+      sol: [R`$u_1 = ${a}$, $d = ${d}$.`, R`$u_n = ${a} + (n - 1)\cdot ${par(d)} = ${right}$.`] }, m)); }
+
+  // B2. Biết hai số hạng, tìm số hạng khác
+  { const u1 = r.int(-10, 10), d = r.nz(-6, 6), i = r.int(2, 6), j = i + r.int(3, 9), k = r.int(15, 30);
+    const u = n => u1 + (n - 1) * d;
+    Q.push({ part: "B", lv: "vua", type: "num", ans: u(k), label: R`$u_{${k}} =$`,
+      text: R`Cho cấp số cộng có $u_{${i}} = ${u(i)}$ và $u_{${j}} = ${u(j)}$. Tính $u_{${k}}$.`,
+      hint: R`$u_{${j}} - u_{${i}} = ${j - i}d$.`,
+      sol: [R`$${j - i}d = ${u(j)} - ${par(u(i))} = ${u(j) - u(i)} \Rightarrow d = ${d}$.`, R`$u_1 = u_{${i}} - ${i - 1}d = ${u1}$.`, R`$u_{${k}} = ${u1} + ${k - 1}\cdot ${par(d)} = ${u(k)}$.`] }); }
+
+  // B3. Số đã cho là số hạng thứ mấy
+  { const a = r.int(2, 9), b = r.int(-9, 9), k = r.int(20, 300), v = a * k + b;
+    Q.push({ part: "B", lv: "vua", type: "num", ans: k, label: "Số hạng thứ",
+      text: R`Cho cấp số cộng có $u_n = ${lin(a, b)}$. Số $${v}$ là số hạng thứ bao nhiêu?`,
+      hint: R`Giải phương trình $${lin(a, b)} = ${v}$.`,
+      sol: [R`$${a}n = ${v} ${sgn(-b)} = ${v - b} \Leftrightarrow n = ${k}$.`] }); }
+
+  // C1. Tính S_n
+  { const a = r.int(-5, 10), d = r.nz(-4, 6), n = r.int(8, 25), S = n * (2 * a + (n - 1) * d) / 2;
+    Q.push({ part: "C", lv: "de", type: "num", ans: S, label: R`$S_{${n}} =$`,
+      text: R`Cho cấp số cộng có $u_1 = ${a}$, $d = ${d}$. Tính tổng $${n}$ số hạng đầu.`,
+      hint: R`$S_{${n}} = \dfrac{${n}\,(2u_1 + ${n - 1}d)}{2}$.`,
+      sol: [R`$S_{${n}} = \dfrac{${n}\,(2\cdot ${par(a)} + ${n - 1}\cdot ${par(d)})}{2} = \dfrac{${n}\cdot ${par(2 * a + (n - 1) * d)}}{2} = ${S}$.`] }); }
+
+  // C2. Tổng dãy liệt kê
+  { const a = r.int(1, 9), d = r.int(2, 6), n = r.int(10, 30), L = a + (n - 1) * d, S = n * (a + L) / 2;
+    Q.push({ part: "C", lv: "vua", type: "num", ans: S, label: "Tổng:",
+      text: R`Tính tổng $S = ${a} + ${a + d} + ${a + 2 * d} + \dots + ${L}$.`,
+      hint: R`Cấp số cộng $u_1 = ${a}$, $d = ${d}$. Tìm số số hạng $n$ từ $u_n = ${L}$.`,
+      sol: [R`$${a} + (n - 1)\cdot ${d} = ${L} \Rightarrow n = ${n}$.`, R`$S = \dfrac{${n}\,(${a} + ${L})}{2} = ${S}$.`] }); }
+
+  // C3. Tìm u1 từ S_n
+  { const a = r.int(-5, 12), d = r.nz(-3, 5), n = r.int(10, 20), S = n * (2 * a + (n - 1) * d) / 2;
+    Q.push({ part: "C", lv: "vua", type: "num", ans: a, label: "$u_1 =$",
+      text: R`Tổng $${n}$ số hạng đầu của một cấp số cộng có công sai $${d}$ là $${S}$. Tìm số hạng đầu.`,
+      hint: R`Thay vào $S_n = \dfrac{n\big[2u_1 + (n-1)d\big]}{2}$ rồi giải tìm $u_1$.`,
+      sol: [R`$${S} = \dfrac{${n}\,(2u_1 + ${n - 1}\cdot ${par(d)})}{2}$ $\Rightarrow 2u_1 ${sgn((n - 1) * d)} = ${2 * S / n}$`, R`$\Rightarrow u_1 = ${a}$.`] }); }
+
+  // C4. Tìm n từ S_n
+  { const a = r.int(1, 9), d = r.int(1, 5), n = r.int(6, 20), S = n * (2 * a + (n - 1) * d) / 2;
+    const B = 2 * a - d, D = B * B + 8 * d * S, sq = Math.round(Math.sqrt(D));
+    Q.push({ part: "C", lv: "kho", type: "num", ans: n, label: "$n =$",
+      text: R`Cấp số cộng có $u_1 = ${a}$, $d = ${d}$. Tổng của bao nhiêu số hạng đầu bằng $${S}$?`,
+      hint: R`$S_n = \dfrac{n\big[${2 * a} + ${d}(n - 1)\big]}{2} = ${S}$. Giải phương trình bậc hai, chọn nghiệm nguyên dương.`,
+      sol: [R`$n\big[${2 * a} + ${d}(n - 1)\big] = ${2 * S}$ $\Leftrightarrow ${d === 1 ? "" : d}n^2${B === 0 ? "" : (B > 0 ? " + " : " - ") + (Math.abs(B) === 1 ? "" : Math.abs(B)) + "n"} - ${2 * S} = 0$.`, R`$\Delta = ${par(B)}^2 + 4\cdot ${d}\cdot ${2 * S} = ${D} = ${sq}^2$.`, R`$n = \dfrac{${-B} + ${sq}}{${2 * d}} = ${n}$ (loại nghiệm âm).`] }); }
+
+  // D1. Tổng số ghế
+  { const a = r.int(10, 30), d = r.int(1, 4), n = r.int(10, 25), S = n * (2 * a + (n - 1) * d) / 2;
+    Q.push({ part: "D", lv: "vua", type: "num", ans: S, label: "Số ghế:", unit: "ghế",
+      text: R`Một hội trường có $${n}$ hàng ghế. Hàng đầu có $${a}$ ghế, mỗi hàng sau nhiều hơn hàng trước $${d}$ ghế. Hội trường có tất cả bao nhiêu ghế?`,
+      hint: R`Số ghế các hàng là cấp số cộng $u_1 = ${a}$, $d = ${d}$. Tính $S_{${n}}$.`,
+      sol: [R`$u_{${n}} = ${a} + ${n - 1}\cdot ${d} = ${a + (n - 1) * d}$.`, R`$S_{${n}} = \dfrac{${n}\,(${a} + ${a + (n - 1) * d})}{2} = ${S}$ ghế.`] }); }
+
+  // D2. Lương tăng đều
+  { const u1 = r.pick([120, 150, 180, 200, 240]), d = r.pick([6, 8, 10, 12, 15]), k = r.int(5, 12), v = u1 + (k - 1) * d;
+    Q.push({ part: "D", lv: "de", type: "num", ans: v, label: "Lương:", unit: "triệu đồng",
+      text: R`Năm đầu đi làm, một người nhận lương $${u1}$ triệu đồng. Từ năm thứ hai, mỗi năm lương tăng thêm $${d}$ triệu đồng. Tính lương năm thứ $${k}$.`,
+      hint: R`Cấp số cộng $u_1 = ${u1}$, $d = ${d}$. Tính $u_{${k}}$.`,
+      sol: [R`$u_{${k}} = ${u1} + ${k - 1}\cdot ${d} = ${v}$ triệu đồng.`] }); }
+
+  return Q.map((q, i) => Object.assign({ id: "g" + (i + 1) }, q));
+}
+
+window.LESSON = { parts: PARTS, sets: [QS, QS2, QS3], gen, theory: THEORY, summary: SUMMARY };
 })();

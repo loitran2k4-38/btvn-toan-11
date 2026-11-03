@@ -11,7 +11,8 @@ bai.html            Trang bài dùng chung cho mọi bài: bai.html?b=<slug>
 data/catalog.js     DANH MỤC chương và bài (sửa file này khi thêm bài/chương)
 data/<slug>.js      Câu hỏi của từng bài
 assets/style.css    Giao diện
-assets/quiz.js      Nạp bài, chấm điểm, thanh chuyển câu, bài trước/sau
+assets/quiz.js      Nạp bài, chọn mã đề, chấm điểm, thanh chuyển câu, bài trước/sau
+assets/gen.js       Công cụ cho bộ sinh đề Luyện tập
 bai/*.html          Chỉ để chuyển hướng các link cũ, không cần tạo thêm
 ```
 
@@ -35,6 +36,33 @@ Thêm một khối vào `chapters` trong `data/catalog.js` theo đúng thứ t�
 ```js
 { id: "c3", so: "Chương III", title: "Giới hạn. Hàm số liên tục", lessons: [ ... ] }
 ```
+
+## Mã đề
+
+Mỗi bài có nhiều đề soạn sẵn và một chế độ Luyện tập sinh số liệu theo mã:
+
+| Link | Đề |
+|---|---|
+| `bai.html?b=day-so` hoặc `&de=1` | Đề 1 |
+| `bai.html?b=day-so&de=2` | Đề 2 (tương tự `de=3`, …) |
+| `bai.html?b=day-so&de=lt1234` | Luyện tập, mã 1234 (cùng mã luôn ra cùng đề) |
+
+Thêm `#bai-tap` hoặc `#ly-thuyet` vào cuối link để mở thẳng tab. Trên trang bài có nút “Sao chép link đề này”.
+Tiến độ từng đề lưu riêng (`btvn-<slug>`, `btvn-<slug>-de2`, `btvn-<slug>-lt1234`); kết quả gửi thầy ghi rõ mã đề.
+
+Trong `data/<slug>.js`:
+
+```js
+const QS = [...], QS2 = [...], QS3 = [...];      // các đề soạn sẵn, cùng PARTS
+function gen(G, r) { ...; return [...]; }        // bộ sinh đề Luyện tập (không bắt buộc)
+window.LESSON = { parts: PARTS, sets: [QS, QS2, QS3], gen, theory: THEORY, summary: SUMMARY };
+```
+
+Nhớ cập nhật `de: <số đề>` cho bài trong `data/catalog.js` để trang chủ hiện đủ trạng thái từng đề.
+
+Bộ sinh đề nhận `G` (công cụ trong `assets/gen.js`: `G.lin`, `G.poly2`, `G.fr`, `G.list`, `G.mc`, `G.show`, …)
+và `r` (bộ số ngẫu nhiên theo mã: `r.int(a, b)`, `r.nz(a, b)`, `r.pick(arr)`, `r.shuffle(arr)`).
+Mỗi câu sinh ra có cùng định dạng với câu soạn tay; trắc nghiệm dùng `G.mc(r, đúng, [sai...])` để xáo phương án.
 
 ## Lý thuyết của bài (không bắt buộc)
 

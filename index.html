@@ -46,29 +46,41 @@
   // Bỏ dấu tiếng Việt để tìm "cap so" vẫn ra "Cấp số"
   const fold = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
 
-  function progress(slug) {
+  // Tiến độ một mã đề (đề 1 dùng khoá cũ btvn-<slug>)
+  function deProgress(slug, k) {
     try {
-      const s = JSON.parse(localStorage.getItem("btvn-" + slug) || "null");
-      if (!s || !s.ans || !s.total) return { state: "new" };
+      const s = JSON.parse(localStorage.getItem("btvn-" + slug + (k === 1 ? "" : "-de" + k)) || "null");
+      if (!s || !s.ans || !s.total) return { k, state: "new", updated: 0 };
       const done = Object.values(s.ans).filter(r => "v" in r);
       const ok = done.filter(r => r.ok).length;
-      if (!done.length) return { state: "new", updated: s.updated || 0 };
-      return { state: done.length >= s.total ? "done" : "doing", done: done.length, ok, total: s.total, updated: s.updated || 0 };
-    } catch (e) { return { state: "new" }; }
+      if (!done.length) return { k, state: "new", updated: s.updated || 0 };
+      return { k, state: done.length >= s.total ? "done" : "doing", done: done.length, ok, total: s.total, updated: s.updated || 0 };
+    } catch (e) { return { k, state: "new", updated: 0 }; }
   }
+  // Tiến độ cả bài: đang làm nếu có đề làm dở; đã xong nếu có đề làm xong và không đề nào dở
+  function progress(l) {
+    const des = Array.from({ length: l.de || 1 }, (_, i) => deProgress(l.slug, i + 1));
+    const doing = des.filter(d => d.state === "doing").sort((a, b) => b.updated - a.updated);
+    const done = des.filter(d => d.state === "done");
+    const state = doing.length ? "doing" : done.length ? "done" : "new";
+    const focus = doing[0] || des.find(d => d.state === "new") || des[0];
+    return { state, des, focus, nDone: done.length, updated: Math.max(0, ...des.map(d => d.updated)) };
+  }
+  const deHref = (slug, k) => "bai.html?b=" + encodeURIComponent(slug) + (k > 1 ? "&de=" + k : "");
 
   const rows = [];   // { lesson, chapter, p, el }
   C.chapters.forEach(ch => ch.lessons.forEach(l => {
-    rows.push({ l, ch, p: l.soon ? { state: "soon" } : progress(l.slug) });
+    rows.push({ l, ch, p: l.soon ? { state: "soon" } : progress(l) });
   }));
   const open = rows.filter(r => r.p.state !== "soon");
 
   // ---------- Lời chào + tổng kết
-  const nDone = open.filter(r => r.p.state === "done").length;
+  const nDone = open.reduce((s, r) => s + r.p.nDone, 0);
+  const nDe = open.reduce((s, r) => s + r.p.des.length, 0);
   const nDoing = open.filter(r => r.p.state === "doing").length;
   const hello = $("hello");
   const sum = document.createElement("span");
-  sum.innerHTML = `Đã xong <b>${nDone}</b>/<b>${open.length}</b> bài` + (nDoing ? ` · đang làm <b>${nDoing}</b>` : "");
+  sum.innerHTML = `${open.length} bài · ${nDe} mã đề · đã xong <b>${nDone}</b> đề` + (nDoing ? ` · <b>${nDoing}</b> bài đang làm dở` : "");
   hello.append(sum);
 
   // ---------- Làm tiếp: bài đang làm gần nhất, nếu không có thì bài đầu tiên chưa làm
@@ -82,12 +94,12 @@
   const pick = doing || nextNew;
   if (pick) {
     const a = $("resume");
-    a.href = "bai.html?b=" + encodeURIComponent(pick.l.slug);
+    a.href = deHref(pick.l.slug, pick.p.focus.k);
     a.innerHTML = `<span class="r-label"></span><span class="r-title"></span><span class="r-meta"></span><span class="r-go">${doing ? "Làm tiếp →" : "Bắt đầu →"}</span>`;
     a.querySelector(".r-label").textContent = doing ? "Đang làm dở" : "Bài tiếp theo";
-    a.querySelector(".r-title").textContent = `${pick.l.so}. ${pick.l.title}`;
+    a.querySelector(".r-title").textContent = `${pick.l.so}. ${pick.l.title} · Đề ${pick.p.focus.k}`;
     a.querySelector(".r-meta").textContent = doing
-      ? `${pick.ch.so} · đã làm ${pick.p.done}/${pick.p.total} câu`
+      ? `${pick.ch.so} · đã làm ${pick.p.focus.done}/${pick.p.focus.total} câu`
       : `${pick.ch.so} · ${pick.ch.title}`;
     a.hidden = false;
   }
@@ -121,13 +133,17 @@
       const soon = r.p.state === "soon";
       const a = document.createElement(soon ? "div" : "a");
       a.className = "lesson" + (soon ? " soon" : "");
-      if (!soon) a.href = "bai.html?b=" + encodeURIComponent(r.l.slug);
-      const pill = { new: ["Chưa làm", "new"], doing: [`Đang làm ${r.p.done}/${r.p.total}`, "doing"],
-                     done: [`Xong · ${r.p.ok}/${r.p.total} đúng`, "done"], soon: ["Sắp có", "soon"] }[r.p.state];
-      a.innerHTML = `<span class="so"></span><span class="t"></span><span class="pill ${pill[1]}"></span><span class="d"></span>`;
+      if (!soon) a.href = deHref(r.l.slug, r.p.focus.k);
+      a.innerHTML = `<span class="so"></span><span class="t"></span><span class="pills"></span><span class="d"></span>`;
+      const pills = a.querySelector(".pills");
+      const addPill = (text, cls) => { const sp = document.createElement("span"); sp.className = "pill " + cls; sp.textContent = text; pills.append(sp); };
+      if (soon) addPill("Sắp có", "soon");
+      else if (r.p.state === "new") addPill(r.p.des.length > 1 ? `${r.p.des.length} mã đề · chưa làm` : "Chưa làm", "new");
+      else r.p.des.forEach(d => addPill(
+        d.state === "done" ? `Đề ${d.k} ✓ ${d.ok}/${d.total}` : d.state === "doing" ? `Đề ${d.k} · ${d.done}/${d.total}` : `Đề ${d.k}`,
+        d.state === "new" ? "soon" : d.state));
       a.querySelector(".so").textContent = r.l.so;
       a.querySelector(".t").textContent = r.l.title;
-      a.querySelector(".pill").textContent = pill[0];
       a.querySelector(".d").textContent = r.l.desc || "";
       r.el = a;
       r.key = fold([r.l.so, r.l.title, r.l.desc, ch.so].join(" "));

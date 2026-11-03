@@ -65,8 +65,19 @@
   }
 
   function start(L) {
-    const QS = L.questions, PARTS = L.parts;
-    const KEY = "btvn-" + meta.slug;
+    const PARTS = L.parts;
+    const SETS = L.sets || [L.questions];
+    // ---------- Chọn mã đề: ?de=1|2|3 (đề soạn sẵn) hoặc ?de=lt1234 (luyện tập, số liệu sinh theo mã)
+    const deParam = (new URLSearchParams(location.search).get("de") || "1").toLowerCase();
+    let practice = null, deNo = 1;
+    const mLt = deParam.match(/^lt(\d{1,6})$/);
+    if (mLt && typeof L.gen === "function" && window.G) practice = +mLt[1];
+    else deNo = Math.min(Math.max(parseInt(deParam, 10) || 1, 1), SETS.length);
+    const QS = practice != null ? L.gen(window.G, window.G.rng(practice)) : SETS[deNo - 1];
+    const deLabel = practice != null ? "Luyện tập · mã " + practice : "Đề " + deNo;
+    const keyFor = k => "btvn-" + meta.slug + (k === 1 ? "" : "-de" + k);
+    const KEY = practice != null ? "btvn-" + meta.slug + "-lt" + practice : keyFor(deNo);
+    const lessonUrl = de => "bai.html?b=" + encodeURIComponent(meta.slug) + (de ? "&de=" + de : "");
 
     let state = { ans: {} };
     try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.ans) state = s; } catch (e) {}
@@ -79,10 +90,10 @@
     }
 
     // ---------- Đầu trang
-    document.title = meta.title + " · Bài tập " + C.title;
+    document.title = `${meta.title} · ${deLabel} · Bài tập ${C.title}`;
     $("crumbHome").textContent = C.title;
     $("crumbChapter").textContent = meta.chapter.so;
-    $("crumbLesson").textContent = meta.so;
+    $("crumbLesson").textContent = `${meta.so} · ${deLabel}`;
     $("eyebrow").textContent = `${C.title} · ${meta.chapter.so} · ${meta.so}`;
     $("lessonTitle").innerHTML = meta.title + (meta.formula ? ` <span class="un">${meta.formula}</span>` : "");
     const hasTheory = Array.isArray(L.theory) && L.theory.length > 0;
@@ -306,7 +317,8 @@
       const hinted = QS.filter(q => state.ans[q.id] && state.ans[q.id].hint);
       const notDone = QS.filter(q => !(state.ans[q.id] && "v" in state.ans[q.id]));
       const lines = [
-        `BÀI TẬP VỀ NHÀ: ${meta.so.toUpperCase()}. ${meta.title.toUpperCase()}`,
+        `${practice != null ? "LUYỆN TẬP" : "BÀI TẬP VỀ NHÀ"}: ${meta.so.toUpperCase()}. ${meta.title.toUpperCase()}`,
+        practice != null ? `Mã luyện tập: ${practice}` : `Mã đề: ${deNo}`,
         `Điểm: ${ok.length}/${total} câu đúng`,
         "Câu sai: " + nums(bad),
         "Câu dùng gợi ý: " + nums(hinted)
@@ -385,6 +397,52 @@
       tv.append(cta);
       $("tabs").hidden = false;
     }
+
+    // ---------- Thanh chọn mã đề
+    (function deBar() {
+      const bar = $("deBar");
+      const status = k => {
+        try {
+          const st = JSON.parse(localStorage.getItem(keyFor(k)) || "null");
+          if (!st || !st.ans || !st.total) return "";
+          const done = Object.values(st.ans).filter(r => "v" in r), ok = done.filter(r => r.ok).length;
+          if (!done.length) return "";
+          return done.length >= st.total ? ` ✓ ${ok}/${st.total}` : ` · ${done.length}/${st.total}`;
+        } catch (e) { return ""; }
+      };
+      const list = el("div", "de-list");
+      SETS.forEach((_, i) => {
+        const k = i + 1, cur = practice == null && k === deNo;
+        const a = el("a", "de-chip" + (cur ? " cur" : ""));
+        a.href = lessonUrl(k === 1 ? "" : k) + "#bai-tap";
+        a.textContent = "Đề " + k + status(k);
+        if (cur) a.setAttribute("aria-current", "page");
+        list.append(a);
+      });
+      if (typeof L.gen === "function") {
+        const a = el("a", "de-chip lt" + (practice != null ? " cur" : ""));
+        const fresh = () => "lt" + (1000 + Math.floor(Math.random() * 9000));
+        a.href = lessonUrl(fresh()) + "#bai-tap";
+        a.textContent = practice != null ? "Luyện tập · mã " + practice : "Luyện tập";
+        if (practice != null) a.setAttribute("aria-current", "page");
+        list.append(a);
+        if (practice != null) {
+          const n = el("a", "de-chip new", "Đề luyện tập mới ↻");
+          n.href = lessonUrl(fresh()) + "#bai-tap";
+          list.append(n);
+        }
+      }
+      bar.append(el("span", "de-h", "Mã đề"), list);
+      const copy = el("button", "linkbtn", "Sao chép link đề này");
+      copy.type = "button";
+      copy.addEventListener("click", () => {
+        const url = location.href.split("#")[0] + "#bai-tap";
+        const done = () => { copy.textContent = "Đã sao chép link"; setTimeout(() => (copy.textContent = "Sao chép link đề này"), 2000); };
+        try { navigator.clipboard.writeText(url).then(done, () => window.prompt && prompt("Link đề:", url)); } catch (e) {}
+      });
+      bar.append(copy);
+      if (practice != null) bar.append(el("p", "de-note", "Đề luyện tập: số liệu được tạo theo mã, cùng mã thì ra cùng đề. Bấm “Đề luyện tập mới” để làm đề khác."));
+    })();
 
     function show(view) {
       const th = hasTheory && view === "ly-thuyet";
