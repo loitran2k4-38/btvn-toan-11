@@ -118,13 +118,5 @@ const QS = [
     sol: [R`Hệ thức truy hồi: $A_0 = 10,\ A_n = 1{,}03\, A_{n-1} - 0{,}12$ (vì 120 nghìn $= 0{,}12$ triệu).`, R`$A_1 = 1{,}03\cdot 10 - 0{,}12 = 10{,}18$.`, R`$A_2 = 1{,}03\cdot 10{,}18 - 0{,}12 = 10{,}4854 - 0{,}12 = 10{,}3654 \approx 10{,}37$ triệu đồng.`] }
 ];
 
-window.LESSON = {
-  slug: "day-so",
-  eyebrow: "Toán 11 · Chương II · Bài 5",
-  title: R`Dãy số <span class="un">(u<sub>n</sub>)</span>`,
-  plainTitle: "Dãy số",
-  minutes: 45,
-  parts: PARTS,
-  questions: QS
-};
+window.LESSON = { parts: PARTS, questions: QS };
 })();

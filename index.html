@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bài tập Toán 11</title>
-<meta name="description" content="Bài tập về nhà Toán 11: Dãy số, Cấp số cộng, Cấp số nhân.">
+<meta name="description" content="Bài tập về nhà Toán 11 theo từng chương: có gợi ý, chấm ngay và lời giải từng bước.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap">
@@ -13,42 +13,173 @@
 <body>
 <main class="wrap">
   <header class="cover">
-    <div class="eyebrow">Toán 11 · Chương II</div>
-    <h1>Dãy số, cấp số cộng <span class="un">&amp;</span> cấp số nhân</h1>
-    <p>Bài tập về nhà. Chọn bài thầy giao, làm xong thì sao chép kết quả ở cuối trang và gửi cho thầy.</p>
+    <div class="eyebrow">Bài tập về nhà</div>
+    <h1 id="siteTitle">Toán 11</h1>
+    <p>Chọn bài thầy giao. Làm xong, sao chép kết quả ở cuối trang bài và gửi cho thầy.</p>
+    <div class="hello" id="hello"></div>
   </header>
-  <div class="lessons" id="lessons"></div>
+
+  <a class="resume" id="resume" hidden></a>
+
+  <div class="tools">
+    <div class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="text" id="q" placeholder="Tìm bài, ví dụ: cấp số, giới hạn…" aria-label="Tìm bài" autocomplete="off">
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="Lọc theo trạng thái"></div>
+  </div>
+
+  <div class="chapters" id="chapters"></div>
+  <p class="empty" id="empty" hidden>Không có bài nào khớp. Em thử từ khoá khác hoặc chọn “Tất cả”.</p>
+
   <p class="foot">Bài làm được lưu trên máy của em, nên hãy dùng cùng một điện thoại hoặc máy tính khi làm tiếp.</p>
 </main>
-<script src="data/lessons.js"></script>
+
+<script src="data/catalog.js"></script>
 <script>
 (function () {
-  const host = document.getElementById("lessons");
-  window.LESSONS.forEach(l => {
-    const open = l.status === "open";
-    const card = document.createElement(open ? "a" : "div");
-    card.className = "lesson" + (open ? "" : " soon");
-    if (open) card.href = "bai/" + l.slug + ".html";
-    let state = "Sắp có", cls = "";
-    if (open) {
-      state = "Bắt đầu →"; cls = "new";
-      try {
-        const s = JSON.parse(localStorage.getItem("btvn-" + l.slug) || "null");
-        if (s && s.ans && s.total) {
-          const done = Object.values(s.ans).filter(r => "v" in r);
-          const ok = done.filter(r => r.ok).length;
-          if (done.length >= s.total) { state = `Xong · ${ok}/${s.total} đúng`; cls = "done"; }
-          else if (done.length) { state = `Đang làm · ${done.length}/${s.total}`; cls = "doing"; }
-        }
-      } catch (e) {}
-    }
-    card.innerHTML = `<span class="so"></span><h2></h2><span class="state ${cls}"></span><p></p>`;
-    card.querySelector(".so").textContent = l.so;
-    card.querySelector("h2").textContent = l.title;
-    card.querySelector(".state").textContent = state;
-    card.querySelector("p").textContent = l.desc;
-    host.append(card);
+  const C = window.CATALOG;
+  const $ = id => document.getElementById(id);
+  document.title = "Bài tập " + C.title;
+  $("siteTitle").textContent = C.title;
+
+  // Bỏ dấu tiếng Việt để tìm "cap so" vẫn ra "Cấp số"
+  const fold = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+
+  function progress(slug) {
+    try {
+      const s = JSON.parse(localStorage.getItem("btvn-" + slug) || "null");
+      if (!s || !s.ans || !s.total) return { state: "new" };
+      const done = Object.values(s.ans).filter(r => "v" in r);
+      const ok = done.filter(r => r.ok).length;
+      if (!done.length) return { state: "new", updated: s.updated || 0 };
+      return { state: done.length >= s.total ? "done" : "doing", done: done.length, ok, total: s.total, updated: s.updated || 0 };
+    } catch (e) { return { state: "new" }; }
+  }
+
+  const rows = [];   // { lesson, chapter, p, el }
+  C.chapters.forEach(ch => ch.lessons.forEach(l => {
+    rows.push({ l, ch, p: l.soon ? { state: "soon" } : progress(l.slug) });
+  }));
+  const open = rows.filter(r => r.p.state !== "soon");
+
+  // ---------- Lời chào + tổng kết
+  let name = "";
+  try { name = localStorage.getItem("btvn-ten-hoc-sinh") || ""; } catch (e) {}
+  const nDone = open.filter(r => r.p.state === "done").length;
+  const nDoing = open.filter(r => r.p.state === "doing").length;
+  const hello = $("hello");
+  if (name) hello.append(Object.assign(document.createElement("span"), { textContent: "Chào " + name + "!" }));
+  const sum = document.createElement("span");
+  sum.innerHTML = `Đã xong <b>${nDone}</b>/<b>${open.length}</b> bài` + (nDoing ? ` · đang làm <b>${nDoing}</b>` : "");
+  hello.append(sum);
+
+  // ---------- Làm tiếp: bài đang làm gần nhất, nếu không có thì bài đầu tiên chưa làm
+  const doing = open.filter(r => r.p.state === "doing").sort((a, b) => b.p.updated - a.p.updated)[0];
+  const lastTouched = open.filter(r => r.p.updated).sort((a, b) => b.p.updated - a.p.updated)[0];
+  let nextNew = null;
+  if (lastTouched) {
+    const i = open.indexOf(lastTouched);
+    nextNew = open.slice(i + 1).find(r => r.p.state === "new") || open.find(r => r.p.state === "new");
+  }
+  const pick = doing || nextNew;
+  if (pick) {
+    const a = $("resume");
+    a.href = "bai.html?b=" + encodeURIComponent(pick.l.slug);
+    a.innerHTML = `<span class="r-label"></span><span class="r-title"></span><span class="r-meta"></span><span class="r-go">${doing ? "Làm tiếp →" : "Bắt đầu →"}</span>`;
+    a.querySelector(".r-label").textContent = doing ? "Đang làm dở" : "Bài tiếp theo";
+    a.querySelector(".r-title").textContent = `${pick.l.so}. ${pick.l.title}`;
+    a.querySelector(".r-meta").textContent = doing
+      ? `${pick.ch.so} · đã làm ${pick.p.done}/${pick.p.total} câu`
+      : `${pick.ch.so} · ${pick.ch.title}`;
+    a.hidden = false;
+  }
+
+  // ---------- Danh sách chương
+  const host = $("chapters");
+  const chEls = [];
+  const focusChapter = pick ? pick.ch.id : (C.chapters[C.chapters.length - 1] || {}).id;
+  C.chapters.forEach(ch => {
+    const mine = rows.filter(r => r.ch === ch);
+    const avail = mine.filter(r => r.p.state !== "soon");
+    const finished = avail.filter(r => r.p.state === "done").length;
+
+    const det = document.createElement("details");
+    det.className = "chapter";
+    det.id = "chuong-" + ch.id;
+    det.open = ch.id === focusChapter || C.chapters.length <= 2;
+    const sm = document.createElement("summary");
+    sm.innerHTML = `<span class="ch-so"></span><span class="ch-title"></span>
+      <span class="ch-side"><span class="ch-count"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+      <span class="ch-bar" aria-hidden="true"><span style="width:${avail.length ? finished / avail.length * 100 : 0}%"></span></span>`;
+    sm.querySelector(".ch-so").textContent = ch.so;
+    sm.querySelector(".ch-title").textContent = ch.title;
+    sm.querySelector(".ch-count").textContent = avail.length ? `${finished}/${avail.length} bài xong` : "Sắp có";
+    if (!avail.length) sm.querySelector(".ch-bar").hidden = true;
+    det.append(sm);
+
+    const list = document.createElement("div");
+    list.className = "lessons";
+    mine.forEach(r => {
+      const soon = r.p.state === "soon";
+      const a = document.createElement(soon ? "div" : "a");
+      a.className = "lesson" + (soon ? " soon" : "");
+      if (!soon) a.href = "bai.html?b=" + encodeURIComponent(r.l.slug);
+      const pill = { new: ["Chưa làm", "new"], doing: [`Đang làm ${r.p.done}/${r.p.total}`, "doing"],
+                     done: [`Xong · ${r.p.ok}/${r.p.total} đúng`, "done"], soon: ["Sắp có", "soon"] }[r.p.state];
+      a.innerHTML = `<span class="so"></span><span class="t"></span><span class="pill ${pill[1]}"></span><span class="d"></span>`;
+      a.querySelector(".so").textContent = r.l.so;
+      a.querySelector(".t").textContent = r.l.title;
+      a.querySelector(".pill").textContent = pill[0];
+      a.querySelector(".d").textContent = r.l.desc || "";
+      r.el = a;
+      r.key = fold([r.l.so, r.l.title, r.l.desc, ch.so].join(" "));
+      list.append(a);
+    });
+    det.append(list);
+    host.append(det);
+    chEls.push({ ch, det, mine, initOpen: det.open });
   });
+
+  // ---------- Lọc + tìm kiếm
+  const FILTERS = [["all", "Tất cả"], ["new", "Chưa làm"], ["doing", "Đang làm"], ["done", "Đã xong"]];
+  let filter = "all";
+  try { filter = sessionStorage.getItem("btvn-loc") || "all"; } catch (e) {}
+  const fHost = $("filters");
+  const fBtns = FILTERS.map(([k, label]) => {
+    const n = k === "all" ? open.length : open.filter(r => r.p.state === k).length;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "fchip";
+    b.innerHTML = `<span></span><span class="n">${n}</span>`;
+    b.firstChild.textContent = label;
+    b.addEventListener("click", () => { filter = k; try { sessionStorage.setItem("btvn-loc", k); } catch (e) {} apply(); });
+    fHost.append(b);
+    return [k, b];
+  });
+
+  const qInput = $("q");
+  qInput.addEventListener("input", apply);
+
+  function apply() {
+    fBtns.forEach(([k, b]) => b.setAttribute("aria-pressed", String(k === filter)));
+    const terms = fold(qInput.value.trim()).split(/\s+/).filter(Boolean);
+    const narrowing = terms.length > 0 || filter !== "all";
+    let shown = 0;
+    chEls.forEach(c => {
+      let any = 0;
+      c.mine.forEach(r => {
+        const okFilter = filter === "all" ? true : r.p.state === filter;
+        const okSearch = terms.every(t => r.key.includes(t));
+        r.el.hidden = !(okFilter && okSearch);
+        if (!r.el.hidden) any++;
+      });
+      c.det.hidden = any === 0;
+      c.det.open = narrowing ? any > 0 : c.initOpen;
+      shown += any;
+    });
+    $("empty").hidden = shown > 0;
+  }
+  apply();
 })();
 </script>
 </body>

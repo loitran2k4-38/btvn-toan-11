@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bài tập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [["$", "$"]], displayMath: [["\\[", "\\]"]] },
+  svg: { fontCache: "global" },
+  options: { enableMenu: false },
+  startup: {
+    typeset: false,
+    ready() {
+      MathJax.startup.defaultReady();
+      MathJax.startup.promise.then(() => window.__onMathJaxReady && window.__onMathJaxReady());
+    }
+  }
+};
+</script>
+</head>
+<body>
+<main class="wrap">
+  <nav class="crumbs" aria-label="Vị trí">
+    <a href="./" id="crumbHome">Trang chủ</a><span aria-hidden="true">›</span><span id="crumbChapter"></span><span aria-hidden="true">›</span><span id="crumbLesson"></span>
+  </nav>
+
+  <div id="app" class="stack" hidden>
+    <header class="cover">
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 id="lessonTitle"></h1>
+      <p id="intro"></p>
+      <div class="name-row">
+        <label for="studentName">Họ và tên:</label>
+        <input type="text" id="studentName" placeholder="Nhập tên của em" autocomplete="name">
+      </div>
+    </header>
+
+    <div class="progress" aria-live="polite">
+      <div class="progress-top">
+        <span>Đã làm <b id="pDone">0</b>/<span id="pTotal">0</span> câu</span>
+        <span>Đúng <b id="pOk">0</b> · Sai <b id="pBad">0</b></span>
+      </div>
+      <div class="bar" aria-hidden="true"><span class="b-ok" id="barOk" style="width:0%"></span><span class="b-bad" id="barBad" style="width:0%"></span></div>
+      <nav class="qnav" id="qnav" aria-label="Chuyển nhanh tới câu"></nav>
+    </div>
+
+    <div id="parts" class="stack"></div>
+
+    <section class="result" id="result">
+      <h2>Kết quả</h2>
+      <div class="score"><span class="big" id="rScore">0</span><span class="of" id="rOf"></span></div>
+      <p class="small" id="rNote"></p>
+      <pre class="report" id="report"></pre>
+      <div class="actions">
+        <button class="btn primary" id="copyBtn" type="button">Sao chép kết quả</button>
+        <button class="btn ghost" id="resetBtn" type="button">Làm lại từ đầu</button>
+      </div>
+      <p class="small" id="copyMsg">Sao chép rồi dán vào tin nhắn Zalo hoặc Messenger gửi cho thầy.</p>
+    </section>
+
+    <nav class="prev-next" id="prevNext" aria-label="Bài khác"></nav>
+  </div>
+
+  <section class="cover" id="missing" hidden>
+    <h1>Không tìm thấy bài này</h1>
+    <p>Có thể đường link bị sai hoặc bài đã được đổi tên. Em quay lại trang chủ để chọn bài nhé.</p>
+    <a class="btn primary" href="./">Về trang chủ</a>
+  </section>
+</main>
+
+<script src="data/catalog.js"></script>
+<script src="assets/quiz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" async></script>
+</body>
+</html>

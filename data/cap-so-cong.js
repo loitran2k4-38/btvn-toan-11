@@ -91,13 +91,5 @@ const QS = [
     sol: [R`$\dfrac{n\,(20 + 4n - 4)}{2} = 2040 \Leftrightarrow n(2n + 8) = 2040 \Leftrightarrow n^2 + 4n - 1020 = 0$.`, R`$\Delta' = 4 + 1020 = 1024 = 32^2 \Rightarrow n = -2 + 32 = 30$ (loại nghiệm âm).`, R`Vậy có $30$ hàng ghế.`] }
 ];
 
-window.LESSON = {
-  slug: "cap-so-cong",
-  eyebrow: "Toán 11 · Chương II · Bài 6",
-  title: R`Cấp số cộng <span class="un">u<sub>n+1</sub> = u<sub>n</sub> + d</span>`,
-  plainTitle: "Cấp số cộng",
-  minutes: 45,
-  parts: PARTS,
-  questions: QS
-};
+window.LESSON = { parts: PARTS, questions: QS };
 })();

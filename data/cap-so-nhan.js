@@ -87,13 +87,5 @@ const QS = [
     sol: [R`$S_{10} = 5\cdot\dfrac{1 - 4^{10}}{1 - 4} = 5\cdot\dfrac{4^{10} - 1}{3}$.`, R`$= 5\cdot\dfrac{1048575}{3} = 5\cdot 349525 = 1747625$ người.`] }
 ];
 
-window.LESSON = {
-  slug: "cap-so-nhan",
-  eyebrow: "Toán 11 · Chương II · Bài 7",
-  title: R`Cấp số nhân <span class="un">u<sub>n+1</sub> = u<sub>n</sub> · q</span>`,
-  plainTitle: "Cấp số nhân",
-  minutes: 45,
-  parts: PARTS,
-  questions: QS
-};
+window.LESSON = { parts: PARTS, questions: QS };
 })();
