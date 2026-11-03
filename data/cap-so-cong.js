@@ -1,0 +1,103 @@
+// Bài 6. Cấp số cộng — dữ liệu bài tập
+(function () {
+const R = String.raw;
+
+const PARTS = [
+  { id: "A", title: "Nhận biết cấp số cộng",
+    recap: R`<b>Nhắc lại:</b> $(u_n)$ là cấp số cộng $\Leftrightarrow u_{n+1} = u_n + d$ với mọi $n$, số $d$ không đổi gọi là <b>công sai</b>. Ba số $a, b, c$ (theo thứ tự) lập thành cấp số cộng $\Leftrightarrow a + c = 2b$.` },
+  { id: "B", title: "Số hạng tổng quát",
+    recap: R`<b>Nhắc lại:</b> $u_n = u_1 + (n - 1)d$. Muốn tìm $u_1$ và $d$, viết các số hạng đề cho theo $u_1$ và $d$ rồi giải hệ.` },
+  { id: "C", title: "Tổng n số hạng đầu",
+    recap: R`<b>Nhắc lại:</b> tổng $n$ số hạng đầu là $S_n = \dfrac{n(u_1 + u_n)}{2}$ hoặc $S_n = \dfrac{n\big[2u_1 + (n - 1)d\big]}{2}$.` },
+  { id: "D", title: "Bài toán thực tế",
+    recap: R`<b>Nhắc lại:</b> tìm xem đại lượng nào tăng (hoặc giảm) đều mỗi lần một lượng cố định. Đó là cấp số cộng: xác định $u_1$, $d$, rồi dùng công thức $u_n$ hoặc $S_n$.` }
+];
+
+const QS = [
+  // ---------- A
+  { id: "a1", part: "A", lv: "de", type: "mc", correct: 0,
+    text: R`Dãy số nào sau đây là cấp số cộng?`,
+    opts: [R`$1;\ -3;\ -7;\ -11;\ -15$`, R`$1;\ -3;\ -6;\ -9;\ -12$`, R`$1;\ -2;\ -4;\ -6;\ -8$`, R`$1;\ 2;\ 4;\ 8;\ 16$`],
+    hint: R`Lấy số sau trừ số trước. Dãy nào có tất cả các hiệu bằng nhau?`,
+    sol: [R`Dãy $1;\ -3;\ -7;\ -11;\ -15$: các hiệu đều bằng $-4$, nên là cấp số cộng với $d = -4$.`, R`Dãy $1;\ -3;\ -6;\dots$ có hiệu $-4$ rồi $-3$; dãy $1;\ -2;\ -4;\dots$ có hiệu $-3$ rồi $-2$; dãy $1;\ 2;\ 4;\dots$ có hiệu $1$ rồi $2$. Các dãy này không phải cấp số cộng.`] },
+  { id: "a2", part: "A", lv: "de", type: "num", ans: 15,
+    text: R`Cho cấp số cộng $(u_n)$ có $u_1 = 9$ và công sai $d = 2$. Tính $u_4$.`,
+    hint: R`Mỗi số hạng bằng số hạng đứng trước cộng thêm $d = 2$.`,
+    sol: [R`$u_2 = 9 + 2 = 11,\quad u_3 = 11 + 2 = 13,\quad u_4 = 13 + 2 = 15$.`, R`Hoặc dùng công thức: $u_4 = u_1 + 3d = 9 + 6 = 15$.`] },
+  { id: "a3", part: "A", lv: "vua", type: "mc", correct: 1,
+    text: R`Dãy số $(u_n)$ nào sau đây là cấp số cộng?`,
+    opts: [R`$u_n = n^2$`, R`$u_n = 2n - 1$`, R`$u_n = (-1)^n + 2n$`, R`$u_n = 3^n$`],
+    hint: R`Tính $u_{n+1} - u_n$ với từng dãy. Cấp số cộng thì hiệu này là một hằng số (không chứa $n$).`,
+    sol: [R`Với $u_n = 2n - 1$: $u_{n+1} - u_n = \big[2(n+1) - 1\big] - (2n - 1) = 2$ không đổi, nên là cấp số cộng với $d = 2$.`, R`$u_n = n^2$: hiệu $= 2n + 1$ thay đổi theo $n$. $u_n = 3^n$: hiệu $= 2\cdot 3^n$ thay đổi. $u_n = (-1)^n + 2n$: $u_1 = 1,\ u_2 = 5,\ u_3 = 5$, hiệu lần lượt $4$ rồi $0$.`] },
+  { id: "a4", part: "A", lv: "vua", type: "num", ans: 1, label: "$x =$",
+    text: R`Tìm $x$ để ba số $2x,\ 3x + 2,\ 5x + 3$ (theo thứ tự đó) là ba số hạng liên tiếp của một cấp số cộng.`,
+    hint: R`Dùng tính chất: $a, b, c$ lập thành cấp số cộng $\Leftrightarrow a + c = 2b$.`,
+    sol: [R`$2x + (5x + 3) = 2(3x + 2)$`, R`$\Leftrightarrow 7x + 3 = 6x + 4 \Leftrightarrow x = 1$.`, R`Thử lại: ba số là $2;\ 5;\ 8$, đúng là cấp số cộng với $d = 3$.`] },
+  // ---------- B
+  { id: "b1", part: "B", lv: "de", type: "num", ans: 22,
+    text: R`Cho cấp số cộng $(u_n)$ có $u_1 = -5$ và công sai $d = 3$. Tính $u_{10}$.`,
+    hint: R`$u_{10} = u_1 + 9d$.`,
+    sol: [R`$u_{10} = u_1 + 9d = -5 + 9\cdot 3 = -5 + 27 = 22$.`] },
+  { id: "b2", part: "B", lv: "de", type: "mc", correct: 0,
+    text: R`Cho cấp số cộng $3;\ 7;\ 11;\ 15;\ \dots$ Công thức số hạng tổng quát của cấp số cộng này là:`,
+    opts: [R`$u_n = 4n - 1$`, R`$u_n = 4n + 3$`, R`$u_n = 3n + 4$`, R`$u_n = 3\cdot 4^{n-1}$`],
+    hint: R`Tìm $u_1$ và $d$, rồi thay vào $u_n = u_1 + (n - 1)d$.`,
+    sol: [R`$u_1 = 3$, $d = 7 - 3 = 4$.`, R`$u_n = 3 + (n - 1)\cdot 4 = 4n - 1$.`, R`Thử lại: $u_1 = 3,\ u_2 = 7,\ u_3 = 11$. Đúng.`] },
+  { id: "b3", part: "B", lv: "vua", type: "num", ans: -11, label: "$u_1 =$",
+    text: R`Cho cấp số cộng $(u_n)$ có $u_5 = -43$ và $u_{21} = -171$. Tìm số hạng đầu $u_1$.`,
+    hint: R`Viết $u_5 = u_1 + 4d$ và $u_{21} = u_1 + 20d$. Trừ hai phương trình để tìm $d$ trước.`,
+    sol: [R`$\begin{cases} u_1 + 4d = -43 \\ u_1 + 20d = -171 \end{cases}$`, R`Trừ vế theo vế: $16d = -128 \Rightarrow d = -8$.`, R`$u_1 = -43 - 4\cdot(-8) = -43 + 32 = -11$.`] },
+  { id: "b4", part: "B", lv: "vua", type: "num", ans: 173, label: "Số hạng thứ",
+    text: R`Cho cấp số cộng $(u_n)$ có $u_n = 7n - 3$. Số $1208$ là số hạng thứ bao nhiêu của cấp số cộng?`,
+    hint: R`Giải phương trình $7n - 3 = 1208$.`,
+    sol: [R`$7n - 3 = 1208 \Leftrightarrow 7n = 1211 \Leftrightarrow n = 173$.`, R`Vậy $1208$ là số hạng thứ $173$.`] },
+  { id: "b5", part: "B", lv: "kho", type: "num", ans: 9, label: "$u_{30} =$",
+    text: R`Số hạng thứ tám của một cấp số cộng là $75$ và số hạng thứ hai mươi là $39$. Tính $u_{30}$.`,
+    hint: R`Từ $u_8 = u_1 + 7d$ và $u_{20} = u_1 + 19d$, tìm $d$ rồi $u_1$.`,
+    sol: [R`$u_{20} - u_8 = 12d = 39 - 75 = -36 \Rightarrow d = -3$.`, R`$u_1 = u_8 - 7d = 75 + 21 = 96$.`, R`$u_{30} = u_1 + 29d = 96 - 87 = 9$.`] },
+  // ---------- C
+  { id: "c1", part: "C", lv: "de", type: "num", ans: 155, label: "$S_{10} =$",
+    text: R`Cho cấp số cộng có $u_1 = 2$ và $d = 3$. Tính tổng $10$ số hạng đầu $S_{10}$.`,
+    hint: R`$S_{10} = \dfrac{10\big[2u_1 + 9d\big]}{2}$.`,
+    sol: [R`$S_{10} = \dfrac{10\,(2\cdot 2 + 9\cdot 3)}{2} = 5\cdot 31 = 155$.`] },
+  { id: "c2", part: "C", lv: "vua", type: "num", ans: 4, label: "$u_1 =$",
+    text: R`Tổng $20$ số hạng đầu của một cấp số cộng có công sai bằng $3$ là $650$. Tìm số hạng đầu của cấp số cộng.`,
+    hint: R`Thay $n = 20$, $d = 3$ vào $S_n = \dfrac{n\big[2u_1 + (n-1)d\big]}{2}$ rồi giải tìm $u_1$.`,
+    sol: [R`$650 = \dfrac{20\,(2u_1 + 19\cdot 3)}{2} = 10\,(2u_1 + 57)$.`, R`$\Rightarrow 2u_1 + 57 = 65 \Rightarrow u_1 = 4$.`] },
+  { id: "c3", part: "C", lv: "vua", type: "num", ans: 6275, label: "$S_{50} =$",
+    text: R`Cho cấp số cộng $(u_n)$ với $u_n = 5n - 2$. Tính $S_{50}$.`,
+    hint: R`Tính $u_1$ và $u_{50}$, rồi dùng $S_{50} = \dfrac{50\,(u_1 + u_{50})}{2}$.`,
+    sol: [R`$u_1 = 3$, $u_{50} = 5\cdot 50 - 2 = 248$.`, R`$S_{50} = \dfrac{50\,(3 + 248)}{2} = 25\cdot 251 = 6275$.`] },
+  { id: "c4", part: "C", lv: "kho", type: "num", ans: 32, label: "$n =$",
+    text: R`Cho cấp số cộng $(u_n)$ với $u_n = 5n - 2$. Biết $S_n = 2576$, tìm $n$.`,
+    hint: R`$S_n = \dfrac{n(u_1 + u_n)}{2} = \dfrac{n(5n + 1)}{2}$. Giải phương trình bậc hai, nhớ $n$ nguyên dương.`,
+    sol: [R`$S_n = \dfrac{n\,(3 + 5n - 2)}{2} = \dfrac{n(5n + 1)}{2}$.`, R`$\dfrac{n(5n+1)}{2} = 2576 \Leftrightarrow 5n^2 + n - 5152 = 0$.`, R`$\Delta = 1 + 4\cdot 5\cdot 5152 = 103041 = 321^2 \Rightarrow n = \dfrac{-1 + 321}{10} = 32$ (loại nghiệm âm).`] },
+  // ---------- D
+  { id: "d1", part: "D", lv: "de", type: "num", ans: 966.5, tol: 0.001, label: "Độ cao:", unit: "m", show: "966,5",
+    text: R`Một ruộng bậc thang có thửa thấp nhất (bậc thứ nhất) ở độ cao $950$ m so với mực nước biển. Mỗi thửa cao hơn thửa ngay dưới nó $1{,}5$ m. Hỏi thửa ruộng ở bậc thứ $12$ có độ cao bao nhiêu mét?`,
+    hint: R`Đây là cấp số cộng với $u_1 = 950$, $d = 1{,}5$. Cần tìm $u_{12}$.`,
+    sol: [R`$u_{12} = u_1 + 11d = 950 + 11\cdot 1{,}5 = 950 + 16{,}5 = 966{,}5$ m.`] },
+  { id: "d2", part: "D", lv: "vua", type: "num", ans: 1647, label: "Số ghế:", unit: "ghế",
+    text: R`Một hội trường có $35$ ghế ở hàng đầu tiên, $37$ ghế ở hàng thứ hai, $39$ ghế ở hàng thứ ba, cứ tiếp tục theo quy luật như vậy. Có tất cả $27$ hàng ghế. Hỏi hội trường có bao nhiêu ghế?`,
+    hint: R`Số ghế mỗi hàng là cấp số cộng $u_1 = 35$, $d = 2$. Cần tính $S_{27}$.`,
+    sol: [R`$S_{27} = \dfrac{27\,(2\cdot 35 + 26\cdot 2)}{2} = \dfrac{27\cdot 122}{2} = 27\cdot 61 = 1647$ ghế.`] },
+  { id: "d3", part: "D", lv: "vua", type: "num", ans: 2130, label: "Số gạch:", unit: "viên",
+    text: R`Một cầu thang bằng gạch có $30$ bậc. Bậc dưới cùng cần $100$ viên gạch, mỗi bậc tiếp theo cần ít hơn $2$ viên so với bậc ngay dưới nó. Cần tất cả bao nhiêu viên gạch để xây cầu thang?`,
+    hint: R`Cấp số cộng $u_1 = 100$, $d = -2$, có $30$ số hạng.`,
+    sol: [R`Bậc trên cùng: $u_{30} = 100 + 29\cdot(-2) = 42$ viên.`, R`Tổng: $S_{30} = \dfrac{30\,(100 + 42)}{2} = 15\cdot 142 = 2130$ viên.`] },
+  { id: "d4", part: "D", lv: "kho", type: "num", ans: 30, label: "Số hàng:", unit: "hàng",
+    text: R`Một góc khán đài có $2040$ chỗ ngồi. Hàng ghế đầu tiên có $10$ chỗ, mỗi hàng sau có thêm $4$ chỗ so với hàng ngay trước nó. Hỏi góc khán đài có bao nhiêu hàng ghế?`,
+    hint: R`Gọi $n$ là số hàng: $S_n = \dfrac{n\big[2\cdot 10 + (n-1)\cdot 4\big]}{2} = 2040$. Giải tìm $n$ nguyên dương.`,
+    sol: [R`$\dfrac{n\,(20 + 4n - 4)}{2} = 2040 \Leftrightarrow n(2n + 8) = 2040 \Leftrightarrow n^2 + 4n - 1020 = 0$.`, R`$\Delta' = 4 + 1020 = 1024 = 32^2 \Rightarrow n = -2 + 32 = 30$ (loại nghiệm âm).`, R`Vậy có $30$ hàng ghế.`] }
+];
+
+window.LESSON = {
+  slug: "cap-so-cong",
+  eyebrow: "Toán 11 · Chương II · Bài 6",
+  title: R`Cấp số cộng <span class="un">u<sub>n+1</sub> = u<sub>n</sub> + d</span>`,
+  plainTitle: "Cấp số cộng",
+  minutes: 45,
+  parts: PARTS,
+  questions: QS
+};
+})();

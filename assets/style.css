@@ -55,6 +55,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 28px 64px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 28px;
 }
 
@@ -66,12 +67,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   padding: 24px 24px 22px 40px;
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 .cover::before { content: ""; position: absolute; top: 0; bottom: 0; left: 22px; width: 2px; background: var(--margin); opacity: .7; }
 .eyebrow { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-h1 { font-family: var(--font-display); font-size: clamp(30px, 6vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
-h1 .un { color: var(--accent); font-weight: 600; }
+h1 { overflow-wrap: anywhere; font-family: var(--font-display); font-size: clamp(30px, 6vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 .un { color: var(--accent); font-weight: 600; display: inline-block; }
 .cover p { margin: 0; color: var(--muted); max-width: 60ch; }
 .name-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .name-row label { font-weight: 600; font-size: 15px; }
@@ -97,12 +99,13 @@ input[type="text"]:focus-visible { outline: none; border-color: var(--accent); b
 .bar .b-bad { background: var(--bad); }
 
 /* Sections */
-section.part { display: grid; gap: 14px; }
+section.part { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.part-head { min-width: 0; }
 .part-head { display: grid; gap: 6px; }
 .part-head h2 { font-family: var(--font-display); font-size: 22px; margin: 0; display: flex; gap: 10px; align-items: baseline; text-wrap: balance; }
 .part-head h2 .tag { font-size: 14px; color: var(--accent); letter-spacing: .08em; }
 .recap {
-  background: var(--accent-soft); border-radius: 6px; padding: 10px 14px; font-size: 15px;
+  background: var(--accent-soft); border-radius: 6px; padding: 10px 14px; font-size: 15px; overflow-x: auto;
 }
 .recap b { color: var(--accent); }
 

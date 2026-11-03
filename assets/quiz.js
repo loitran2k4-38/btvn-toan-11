@@ -33,6 +33,8 @@
       const a = parseNum(p[0]), b = parseNum(p[1]);
       return b ? a / b : NaN;
     }
+    // 1.747.625 hoặc 1,747,625 (từ hai nhóm nghìn trở lên) -> bỏ dấu phân cách
+    if (/^-?\d{1,3}([.,]\d{3}){2,}$/.test(s)) s = s.replace(/[.,]/g, "");
     s = s.replace(",", ".");
     if (!/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
     return parseFloat(s);
@@ -99,7 +101,7 @@
       row.append(lab, input);
       if (q.unit) row.append(el("span", "unit", q.unit));
       card.append(row);
-      card.append(el("div", "num-hint", "Có thể nhập số nguyên, số thập phân (dùng dấu phẩy hoặc chấm) hoặc phân số dạng 8/15."));
+      card.append(el("div", "num-hint", "Nhập số nguyên, số thập phân (dấu phẩy hoặc chấm) hoặc phân số như 8/15. Số lớn viết liền, ví dụ 12800."));
       input.addEventListener("input", () => { checkBtn.disabled = !input.value.trim(); });
       input.addEventListener("keydown", e => { if (e.key === "Enter" && !checkBtn.disabled) checkBtn.click(); });
       getVal = () => input.value.trim();

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bài tập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [["$", "$"]], displayMath: [["\\[", "\\]"]] },
+  svg: { fontCache: "global" },
+  options: { enableMenu: false }
+};
+</script>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="../">← Tất cả bài tập</a>
+  <header class="cover">
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="lessonTitle"></h1>
+    <p id="intro"></p>
+    <div class="name-row">
+      <label for="studentName">Họ và tên:</label>
+      <input type="text" id="studentName" placeholder="Nhập tên của em" autocomplete="name">
+    </div>
+  </header>
+
+  <div class="progress" aria-live="polite">
+    <div class="progress-top">
+      <span>Đã làm <b id="pDone">0</b>/<span id="pTotal">0</span> câu</span>
+      <span>Đúng <b id="pOk">0</b> · Sai <b id="pBad">0</b></span>
+    </div>
+    <div class="bar" aria-hidden="true"><span class="b-ok" id="barOk" style="width:0%"></span><span class="b-bad" id="barBad" style="width:0%"></span></div>
+  </div>
+
+  <div id="parts"></div>
+
+  <section class="result" id="result">
+    <h2>Kết quả</h2>
+    <div class="score"><span class="big" id="rScore">0</span><span class="of" id="rOf"></span></div>
+    <p class="small" id="rNote"></p>
+    <pre class="report" id="report"></pre>
+    <div class="actions">
+      <button class="btn primary" id="copyBtn" type="button">Sao chép kết quả</button>
+      <button class="btn ghost" id="resetBtn" type="button">Làm lại từ đầu</button>
+    </div>
+    <p class="small" id="copyMsg">Sao chép rồi dán vào tin nhắn Zalo hoặc Messenger gửi cho thầy.</p>
+  </section>
+</main>
+
+<!-- Đổi tên file dữ liệu ở dòng dưới khi tạo bài mới -->
+<script src="../data/cap-so-nhan.js"></script>
+<script src="../assets/quiz.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" async></script>
+</body>
+</html>
