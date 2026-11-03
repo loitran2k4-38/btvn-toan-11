@@ -1,4 +1,4 @@
-# Bài tập Toán 11
+# BTVN Toán 11
 
 Trang bài tập về nhà (Dãy số, Cấp số cộng, Cấp số nhân), chạy tĩnh trên GitHub Pages, không cần build.
 
