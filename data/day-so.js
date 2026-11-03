@@ -118,5 +118,68 @@ const QS = [
     sol: [R`Hệ thức truy hồi: $A_0 = 10,\ A_n = 1{,}03\, A_{n-1} - 0{,}12$ (vì 120 nghìn $= 0{,}12$ triệu).`, R`$A_1 = 1{,}03\cdot 10 - 0{,}12 = 10{,}18$.`, R`$A_2 = 1{,}03\cdot 10{,}18 - 0{,}12 = 10{,}4854 - 0{,}12 = 10{,}3654 \approx 10{,}37$ triệu đồng.`] }
 ];
 
-window.LESSON = { parts: PARTS, questions: QS };
+// ---------- LÝ THUYẾT
+const { def, formula, note, ex } = window.T;
+
+const THEORY = [
+  { id: "dinh-nghia", title: "Dãy số là gì?",
+    html: def("Định nghĩa", R`<p>Một hàm số $u$ xác định trên tập số nguyên dương $\mathbb{N}^*$ được gọi là một <b>dãy số vô hạn</b> (gọi tắt là <b>dãy số</b>):</p>`)
+      + formula(R`u:\ \mathbb{N}^* \to \mathbb{R},\qquad n \mapsto u(n)`)
+      + R`<ul>
+        <li>Thay vì viết $u(1), u(2), u(3), \dots$ ta viết $u_1, u_2, u_3, \dots$ Mỗi giá trị gọi là một <b>số hạng</b>; $u_1$ là <b>số hạng đầu</b>.</li>
+        <li>Dãy số được kí hiệu là $(u_n)$, và $u_n$ gọi là <b>số hạng tổng quát</b> (số hạng thứ $n$).</li>
+        <li>Viết dạng khai triển: $u_1, u_2, \dots, u_n, \dots$</li>
+      </ul>`
+      + note(R`Dãy chỉ có $m$ số hạng $u_1, u_2, \dots, u_m$ gọi là <b>dãy số hữu hạn</b>: $u_1$ là số hạng đầu, $u_m$ là <b>số hạng cuối</b>.`)
+      + ex(R`<b>Ví dụ 1.</b> Xác định số hạng đầu và số hạng tổng quát của dãy các số tự nhiên lẻ $1, 3, 5, 7, \dots$`,
+           R`<p>Số hạng đầu $u_1 = 1$. Các số lẻ có dạng $2n - 1$ nên $u_n = 2n - 1$.</p><p>Thử lại: $u_1 = 1,\ u_2 = 3,\ u_3 = 5$. Đúng.</p>`)
+      + ex(R`<b>Ví dụ 2.</b> Dãy hữu hạn gồm các số tự nhiên lẻ nhỏ hơn $20$, xếp từ bé đến lớn. Liệt kê các số hạng, tìm số hạng đầu và số hạng cuối.`,
+           R`<p>$1, 3, 5, 7, 9, 11, 13, 15, 17, 19$ (có $10$ số hạng).</p><p>Số hạng đầu $u_1 = 1$, số hạng cuối $u_{10} = 19$.</p>`) },
+
+  { id: "cach-cho", title: "Các cách cho một dãy số",
+    html: R`<p>Có 3 cách thường dùng:</p>`
+      + def("Cách 1. Cho bằng công thức số hạng tổng quát", R`<p>Cho $u_n$ theo $n$. Muốn tính số hạng thứ $k$, chỉ cần <b>thay $n = k$</b>.</p>`)
+      + ex(R`<b>Ví dụ 3.</b> Cho $u_n = 2n^2 - 3n + 2$. Tính $u_1, u_2, u_3$.`,
+           R`<p>$u_1 = 2 - 3 + 2 = 1$</p><p>$u_2 = 8 - 6 + 2 = 4$</p><p>$u_3 = 18 - 9 + 2 = 11$</p>`)
+      + def("Cách 2. Cho bằng hệ thức truy hồi", R`<p>Cho số hạng đầu $u_1$ (hoặc vài số hạng đầu) và một công thức tính $u_{n+1}$ theo số hạng đứng trước nó. Muốn tính $u_k$ thì phải <b>tính lần lượt</b> $u_2, u_3, \dots$</p>`)
+      + formula(R`\begin{cases} u_1 = a \\ u_{n+1} = f(u_n) \end{cases}`)
+      + ex(R`<b>Ví dụ 4.</b> Cho $u_1 = 1$ và $u_{n+1} = u_n + (n + 1)$. Viết năm số hạng đầu (các <b>số tam giác</b>).`,
+           R`<p>$u_2 = u_1 + 2 = 3$, $u_3 = u_2 + 3 = 6$, $u_4 = u_3 + 4 = 10$, $u_5 = u_4 + 5 = 15$.</p><p>Năm số hạng đầu: $1, 3, 6, 10, 15$.</p>`)
+      + def("Cách 3. Mô tả bằng lời", R`<p>Nói rõ cách xác định từng số hạng, ví dụ: “dãy các số nguyên dương chia hết cho $5$” là $5, 10, 15, 20, \dots$ (khi đó $u_n = 5n$).</p>`)
+      + note(R`Muốn <b>dự đoán công thức tổng quát</b>: viết vài số hạng đầu, tìm quy luật giữa $u_n$ và vị trí $n$, rồi thử lại với $n = 1, 2, 3$.`) },
+
+  { id: "tang-giam", title: "Dãy số tăng, dãy số giảm",
+    html: def("Định nghĩa", R`<ul>
+        <li>$(u_n)$ là <b>dãy tăng</b> nếu $u_{n+1} > u_n$ với mọi $n \in \mathbb{N}^*$.</li>
+        <li>$(u_n)$ là <b>dãy giảm</b> nếu $u_{n+1} < u_n$ với mọi $n \in \mathbb{N}^*$.</li>
+      </ul><p>Dãy tăng và dãy giảm gọi chung là <b>dãy đơn điệu</b>.</p>`)
+      + R`<p><b>Cách xét:</b></p><ul>
+        <li><b>Xét hiệu</b> $u_{n+1} - u_n$: luôn dương thì tăng, luôn âm thì giảm. Dùng cho dãy dạng đa thức, phân thức.</li>
+        <li><b>Xét tỉ số</b> $\dfrac{u_{n+1}}{u_n}$ khi biết $u_n > 0$: lớn hơn $1$ thì tăng, nhỏ hơn $1$ thì giảm. Dùng cho dãy có lũy thừa dạng $a^n$.</li>
+      </ul>`
+      + ex(R`<b>Ví dụ 5.</b> Xét tính tăng, giảm của dãy $u_n = n^2 + n + 1$.`,
+           R`<p>$u_{n+1} - u_n$ $= \big[(n+1)^2 + (n+1) + 1\big] - \big[n^2 + n + 1\big]$ $= 2n + 2 > 0$ với mọi $n$.</p><p>Vậy dãy tăng.</p>`)
+      + ex(R`<b>Ví dụ 6.</b> Xét tính tăng, giảm của dãy $u_n = \dfrac{3^n}{2^{n+1}}$.`,
+           R`<p>$u_n > 0$ với mọi $n$, nên xét tỉ số: $\dfrac{u_{n+1}}{u_n} = \dfrac{3^{n+1}}{2^{n+2}}\cdot\dfrac{2^{n+1}}{3^n} = \dfrac{3}{2} > 1$.</p><p>Vậy dãy tăng.</p>`)
+      + note(R`Có dãy <b>không tăng cũng không giảm</b>, ví dụ dãy đổi dấu liên tục $u_n = (-1)^n$: $-1, 1, -1, 1, \dots$ Để chứng tỏ điều này, chỉ cần chỉ ra $u_1 > u_2$ nhưng $u_2 < u_3$.`) },
+
+  { id: "bi-chan", title: "Dãy số bị chặn",
+    html: def("Định nghĩa", R`<ul>
+        <li>$(u_n)$ <b>bị chặn trên</b> nếu có số $M$ sao cho $u_n \le M$ với mọi $n$.</li>
+        <li>$(u_n)$ <b>bị chặn dưới</b> nếu có số $m$ sao cho $u_n \ge m$ với mọi $n$.</li>
+        <li>$(u_n)$ <b>bị chặn</b> nếu vừa bị chặn trên vừa bị chặn dưới: $m \le u_n \le M$ với mọi $n$.</li>
+      </ul>`)
+      + ex(R`<b>Ví dụ 7.</b> Chứng minh dãy $u_n = \dfrac{2n + 1}{n + 2}$ bị chặn.`,
+           R`<p>Tách: $u_n = \dfrac{2(n + 2) - 3}{n + 2} = 2 - \dfrac{3}{n + 2}$.</p><p>Vì $\dfrac{3}{n+2} > 0$ nên $u_n < 2$. Vì $n \ge 1$ nên $\dfrac{3}{n+2} \le 1$, suy ra $u_n \ge 1$.</p><p>Vậy $1 \le u_n < 2$: dãy bị chặn.</p>`)
+      + note(R`Mẹo với phân thức $\dfrac{an + b}{cn + d}$: <b>tách phần nguyên</b> như ví dụ trên. Khi đó vừa thấy được dãy tăng hay giảm, vừa tìm được số chặn trên, chặn dưới.`) }
+];
+
+const SUMMARY = R`<ul>
+  <li>Số hạng tổng quát $u_n$: thay $n = k$ để được $u_k$.</li>
+  <li>Hệ thức truy hồi: tính lần lượt từ $u_1$.</li>
+  <li>Tăng: $u_{n+1} - u_n > 0$. Giảm: $u_{n+1} - u_n < 0$. Khi $u_n > 0$ có thể xét $\dfrac{u_{n+1}}{u_n}$ so với $1$.</li>
+  <li>Bị chặn: $m \le u_n \le M$ với mọi $n$.</li>
+</ul>`;
+
+window.LESSON = { parts: PARTS, questions: QS, theory: THEORY, summary: SUMMARY };
 })();

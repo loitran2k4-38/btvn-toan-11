@@ -40,6 +40,16 @@ window.MathJax = {
       </div>
     </header>
 
+    <div class="tabs" id="tabs" role="tablist" aria-label="Phần của bài" hidden>
+      <button type="button" class="tab" role="tab" id="tab-lt" aria-controls="theoryView" aria-selected="false">Lý thuyết</button>
+      <button type="button" class="tab" role="tab" id="tab-bt" aria-controls="exView" aria-selected="true">Bài tập <span class="n" id="tabCount"></span></button>
+    </div>
+
+    <div id="theoryView" class="stack" role="tabpanel" aria-labelledby="tab-lt" hidden></div>
+
+    <div id="exView" class="stack" role="tabpanel" aria-labelledby="tab-bt">
+    <p class="rules">Mỗi câu chỉ được bấm <b>Kiểm tra</b> một lần, nên em hãy tính ra nháp trước. Nếu bí, bấm <b>Gợi ý</b>. Làm xong, kéo xuống cuối trang để gửi kết quả cho thầy.</p>
+
     <div class="progress" aria-live="polite">
       <div class="progress-top">
         <span>Đã làm <b id="pDone">0</b>/<span id="pTotal">0</span> câu</span>
@@ -62,6 +72,7 @@ window.MathJax = {
       </div>
       <p class="small" id="copyMsg">Sao chép rồi dán vào tin nhắn Zalo hoặc Messenger gửi cho thầy.</p>
     </section>
+    </div>
 
     <nav class="prev-next" id="prevNext" aria-label="Bài khác"></nav>
   </div>

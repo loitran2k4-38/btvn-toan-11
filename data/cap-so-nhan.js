@@ -87,5 +87,67 @@ const QS = [
     sol: [R`$S_{10} = 5\cdot\dfrac{1 - 4^{10}}{1 - 4} = 5\cdot\dfrac{4^{10} - 1}{3}$.`, R`$= 5\cdot\dfrac{1048575}{3} = 5\cdot 349525 = 1747625$ người.`] }
 ];
 
-window.LESSON = { parts: PARTS, questions: QS };
+// ---------- LÝ THUYẾT
+const { def, formula, note, ex } = window.T;
+
+const THEORY = [
+  { id: "dinh-nghia", title: "Cấp số nhân là gì?",
+    html: def("Định nghĩa", R`<p><b>Cấp số nhân</b> là một dãy số (hữu hạn hoặc vô hạn) mà kể từ số hạng thứ hai, mỗi số hạng đều bằng số hạng đứng ngay trước nó <b>nhân với một số $q$ không đổi</b>.</p>`)
+      + formula(R`u_{n+1} = u_n \cdot q \quad (\forall n \ge 1)`)
+      + R`<p>Số $q$ gọi là <b>công bội</b>. Khi các số hạng khác $0$: $q = \dfrac{u_{n+1}}{u_n}$.</p>`
+      + note(R`<b>Trường hợp đặc biệt:</b> $q = 0$ cho dãy $u_1, 0, 0, \dots$; $q = 1$ cho dãy không đổi $u_1, u_1, u_1, \dots$; $u_1 = 0$ cho dãy $0, 0, 0, \dots$`)
+      + ex(R`<b>Ví dụ 1.</b> Tìm công bội của các cấp số nhân: &nbsp;a) $2; 6; 18; 54$ &nbsp;&nbsp;b) $1; -2; 4; -8$`,
+           R`<p>a) $q = \dfrac{6}{2} = 3$. &nbsp;b) $q = \dfrac{-2}{1} = -2$ (công bội âm thì các số hạng đổi dấu liên tục).</p>`)
+      + ex(R`<b>Ví dụ 2.</b> Chứng tỏ dãy $u_n = 3\cdot 4^n$ là cấp số nhân. Tìm số hạng đầu và công bội.`,
+           R`<p>$\dfrac{u_{n+1}}{u_n} = \dfrac{3\cdot 4^{n+1}}{3\cdot 4^n} = 4$ không đổi, nên là cấp số nhân với $q = 4$.</p><p>$u_1 = 3\cdot 4 = 12$ (chú ý: không phải $3$).</p>`) },
+
+  { id: "so-hang-tong-quat", title: "Số hạng tổng quát",
+    html: def("Định lí", R`<p>Nếu cấp số nhân có số hạng đầu $u_1$ và công bội $q \ne 0$ thì:</p>`)
+      + formula(R`u_n = u_1 \cdot q^{\,n-1} \qquad (n \ge 2)`)
+      + note(R`Nếu đề cho hai số hạng (ví dụ $u_4$ và $u_{10}$), hãy <b>chia</b> chúng cho nhau để triệt tiêu $u_1$: $\dfrac{u_{10}}{u_4} = q^6$.`)
+      + ex(R`<b>Ví dụ 3.</b> Cho cấp số nhân có $u_1 = 3$, $q = 2$. Tính $u_6$. Số $384$ là số hạng thứ mấy?`,
+           R`<p>$u_6 = 3\cdot 2^5 = 96$.</p><p>$3\cdot 2^{n-1} = 384$ $\iff 2^{n-1} = 128 = 2^7$ $\iff n = 8$. Vậy $384$ là số hạng thứ $8$.</p>`) },
+
+  { id: "tinh-chat", title: "Tính chất ba số hạng liên tiếp",
+    html: def("Định lí", R`<p>Trong một cấp số nhân, kể từ số hạng thứ hai, <b>bình phương</b> mỗi số hạng bằng <b>tích</b> hai số hạng đứng kề nó:</p>`)
+      + formula(R`u_k^2 = u_{k-1}\cdot u_{k+1}`)
+      + note(R`<b>Hệ quả:</b> ba số khác $0$ là $a, b, c$ (theo thứ tự đó) lập thành cấp số nhân $\iff b^2 = a\cdot c$.`)
+      + ex(R`<b>Ví dụ 4.</b> Tìm $x$ để $x,\ x + 2,\ x + 3$ là ba số hạng liên tiếp của một cấp số nhân.`,
+           R`<p>$(x + 2)^2 = x(x + 3)$ $\iff x^2 + 4x + 4 = x^2 + 3x$ $\iff x = -4$.</p><p>Thử lại: ba số $-4, -2, -1$ có công bội $\dfrac{1}{2}$. Đúng.</p>`) },
+
+  { id: "tong", title: "Tổng n số hạng đầu",
+    html: def("Định lí", R`<p>Gọi $S_n = u_1 + u_2 + \dots + u_n$ là tổng $n$ số hạng đầu của cấp số nhân có công bội $q$. Khi đó:</p>`)
+      + formula(R`S_n = u_1\cdot\frac{1 - q^n}{1 - q}\quad (q \ne 1), \qquad S_n = n\,u_1\quad (q = 1)`)
+      + note(R`Đếm đúng số số hạng $n$. Ví dụ $1 + 2 + 2^2 + \dots + 2^9$ có $10$ số hạng (từ $2^0$ đến $2^9$), không phải $9$.`)
+      + ex(R`<b>Ví dụ 5.</b> Tính tổng $1 + 2 + 4 + 8 + \dots + 2^9$.`,
+           R`<p>Cấp số nhân $u_1 = 1$, $q = 2$, có $10$ số hạng.</p><p>$S_{10} = 1\cdot\dfrac{1 - 2^{10}}{1 - 2} = 2^{10} - 1 = 1023$.</p>`) },
+
+  { id: "thuc-te", title: "Vận dụng vào bài toán thực tế",
+    html: R`<p>Khi một đại lượng cứ sau mỗi kì lại <b>nhân lên một số lần cố định</b> thì đó là cấp số nhân: vi khuẩn phân đôi, tiền gửi có lãi kép, giá trị tài sản giảm theo phần trăm…</p>
+      <ul><li>Tăng $p\%$ mỗi kì: nhân với $q = 1 + \dfrac{p}{100}$ (tăng $5\%$ thì $q = 1{,}05$).</li>
+      <li>Giảm $p\%$ mỗi kì: nhân với $q = 1 - \dfrac{p}{100}$ (giảm $10\%$ thì $q = 0{,}9$).</li>
+      <li>Phân đôi: $q = 2$. Chú ý đếm đúng số lần (2 giờ, cứ 20 phút phân đôi một lần, là $6$ lần).</li></ul>`
+      + ex(R`<b>Ví dụ 6.</b> Gửi $100$ triệu đồng, lãi suất $6\%$ một năm, lãi nhập vào gốc (lãi kép). Sau $3$ năm có bao nhiêu tiền?`,
+           R`<p>Mỗi năm số tiền nhân với $1{,}06$.</p><p>Sau 3 năm: $100\cdot 1{,}06^3 \approx 119{,}1$ triệu đồng.</p>`) },
+
+  { id: "so-sanh", title: "So sánh cấp số cộng và cấp số nhân",
+    html: R`<div class="tbl"><table>
+      <thead><tr><th></th><th>Cấp số cộng</th><th>Cấp số nhân</th></tr></thead>
+      <tbody>
+        <tr><th>Quy luật</th><td>$u_{n+1} = u_n + d$</td><td>$u_{n+1} = u_n\cdot q$</td></tr>
+        <tr><th>Số hạng tổng quát</th><td>$u_1 + (n-1)d$</td><td>$u_1\cdot q^{n-1}$</td></tr>
+        <tr><th>Ba số $a, b, c$</th><td>$a + c = 2b$</td><td>$b^2 = ac$</td></tr>
+        <tr><th>Tổng $S_n$</th><td>$\dfrac{n(u_1 + u_n)}{2}$</td><td>$u_1\dfrac{1 - q^n}{1 - q}$</td></tr>
+        <tr><th>Thực tế</th><td>Tăng đều một lượng</td><td>Tăng theo phần trăm, gấp lên</td></tr>
+      </tbody></table></div>` }
+];
+
+const SUMMARY = R`<ul>
+  <li>Định nghĩa: $u_{n+1} = u_n\cdot q$, công bội $q = \dfrac{u_{n+1}}{u_n}$.</li>
+  <li>Số hạng tổng quát: $u_n = u_1\cdot q^{n-1}$.</li>
+  <li>Ba số khác $0$ là $a, b, c$ lập thành cấp số nhân $\iff b^2 = ac$.</li>
+  <li>Tổng ($q \ne 1$): $S_n = u_1\cdot\dfrac{1 - q^n}{1 - q}$.</li>
+</ul>`;
+
+window.LESSON = { parts: PARTS, questions: QS, theory: THEORY, summary: SUMMARY };
 })();

@@ -7,6 +7,14 @@
   const NAME_KEY = "btvn-ten-hoc-sinh";
   const $ = id => document.getElementById(id);
 
+  // ---------- Mẫu HTML cho phần lý thuyết (dùng trong data/<slug>.js)
+  window.T = {
+    def: (label, html) => `<div class="def"><div class="lbl">${label}</div>${html}</div>`,
+    formula: tex => `<div class="formula">\\[${tex}\\]</div>`,
+    note: html => `<div class="note">${html.startsWith("<b>") ? "" : "<b>Chú ý:</b> "}${html}</div>`,
+    ex: (q, sol) => `<div class="ex"><div class="ex-q">${q}</div><details class="ex-d"><summary>Xem lời giải</summary><div class="ex-sol">${sol}</div></details></div>`
+  };
+
   // ---------- Danh sách phẳng để tìm bài trước / sau
   const flat = [];
   C.chapters.forEach(ch => ch.lessons.forEach(l => flat.push(Object.assign({ chapter: ch }, l))));
@@ -80,10 +88,12 @@
     $("crumbLesson").textContent = meta.so;
     $("eyebrow").textContent = `${C.title} · ${meta.chapter.so} · ${meta.so}`;
     $("lessonTitle").innerHTML = meta.title + (meta.formula ? ` <span class="un">${meta.formula}</span>` : "");
-    $("intro").innerHTML =
-      `${QS.length} câu, chia ${PARTS.length} phần từ dễ đến khó, khoảng ${meta.minutes || 45} phút. ` +
-      `Mỗi câu chỉ được bấm <b>Kiểm tra</b> một lần, nên em hãy tính ra nháp trước. Nếu bí, bấm <b>Gợi ý</b>. ` +
-      `Làm xong, kéo xuống cuối trang để gửi kết quả cho thầy.`;
+    const hasTheory = Array.isArray(L.theory) && L.theory.length > 0;
+    $("intro").innerHTML = hasTheory
+      ? `Gồm phần <b>Lý thuyết</b> và <b>${QS.length} câu bài tập</b> (khoảng ${meta.minutes || 45} phút). ` +
+        `Em đọc lý thuyết, tự làm các ví dụ ra nháp rồi mới mở lời giải, sau đó chuyển sang làm bài tập.`
+      : `${QS.length} câu bài tập, chia ${PARTS.length} phần từ dễ đến khó, khoảng ${meta.minutes || 45} phút.`;
+    $("tabCount").textContent = QS.length + " câu";
     $("rOf").textContent = `/ ${QS.length} câu đúng`;
 
     // ---------- Bài trước / sau
@@ -346,6 +356,69 @@
     });
 
     render();
+
+    // ---------- Lý thuyết + chuyển tab
+    if (hasTheory) {
+      const tv = $("theoryView");
+      const toc = el("nav", "toc");
+      toc.setAttribute("aria-label", "Mục lục lý thuyết");
+      toc.append(el("div", "toc-h", "Nội dung"));
+      const tocList = el("ol");
+      toc.append(tocList);
+      tv.append(toc);
+      L.theory.forEach((sec, i) => {
+        const id = "lt-" + sec.id;
+        const box = el("section", "th-sec");
+        box.id = id;
+        box.append(el("h2", null, `<span class="th-n">${i + 1}</span><span></span>`));
+        box.querySelector("h2 span:last-child").textContent = sec.title;
+        box.append(el("div", "th-body", sec.html));
+        tv.append(box);
+        const li = el("li");
+        const b = el("button", "toc-link");
+        b.type = "button"; b.textContent = sec.title;
+        b.addEventListener("click", () => box.scrollIntoView({ behavior: "smooth", block: "start" }));
+        li.append(b); tocList.append(li);
+      });
+      if (L.summary) {
+        const sum = el("section", "th-summary");
+        sum.append(el("h2", null, "Ghi nhớ"));
+        sum.append(el("div", "th-body", L.summary));
+        tv.append(sum);
+      }
+      const cta = el("button", "btn primary cta", `Làm bài tập (${QS.length} câu) →`);
+      cta.type = "button";
+      cta.addEventListener("click", () => { go("bai-tap"); $("tabs").scrollIntoView({ block: "start" }); });
+      tv.append(cta);
+      $("tabs").hidden = false;
+    }
+
+    function show(view) {
+      const th = hasTheory && view === "ly-thuyet";
+      $("theoryView").hidden = !th;
+      $("exView").hidden = th;
+      $("tab-lt").setAttribute("aria-selected", String(th));
+      $("tab-bt").setAttribute("aria-selected", String(!th));
+      $("tab-lt").tabIndex = th ? 0 : -1;
+      $("tab-bt").tabIndex = th ? -1 : 0;
+    }
+    function go(view) {
+      try { history.replaceState(null, "", "#" + view); } catch (e) {}
+      show(view);
+    }
+    $("tab-lt").addEventListener("click", () => go("ly-thuyet"));
+    $("tab-bt").addEventListener("click", () => go("bai-tap"));
+    $("tabs").addEventListener("keydown", e => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const toTheory = $("tab-bt").getAttribute("aria-selected") === "true";
+      go(toTheory ? "ly-thuyet" : "bai-tap");
+      $(toTheory ? "tab-lt" : "tab-bt").focus();
+    });
+    window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+    const started = QS.some(q => state.ans[q.id] && ("v" in state.ans[q.id] || state.ans[q.id].hint));
+    const h = location.hash.slice(1);
+    show(h === "ly-thuyet" || h === "bai-tap" ? h : (hasTheory && !started ? "ly-thuyet" : "bai-tap"));
+
     $("app").hidden = false;
     rendered = true;
     typeset();

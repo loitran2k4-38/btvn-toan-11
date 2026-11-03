@@ -91,5 +91,57 @@ const QS = [
     sol: [R`$\dfrac{n\,(20 + 4n - 4)}{2} = 2040 \Leftrightarrow n(2n + 8) = 2040 \Leftrightarrow n^2 + 4n - 1020 = 0$.`, R`$\Delta' = 4 + 1020 = 1024 = 32^2 \Rightarrow n = -2 + 32 = 30$ (loại nghiệm âm).`, R`Vậy có $30$ hàng ghế.`] }
 ];
 
-window.LESSON = { parts: PARTS, questions: QS };
+// ---------- LÝ THUYẾT
+const { def, formula, note, ex } = window.T;
+
+const THEORY = [
+  { id: "dinh-nghia", title: "Cấp số cộng là gì?",
+    html: def("Định nghĩa", R`<p><b>Cấp số cộng</b> là một dãy số (hữu hạn hoặc vô hạn) mà kể từ số hạng thứ hai, mỗi số hạng đều bằng số hạng đứng ngay trước nó <b>cộng với một số $d$ không đổi</b>.</p>`)
+      + formula(R`u_{n+1} = u_n + d \quad (\forall n \ge 1)`)
+      + R`<p>Số $d$ gọi là <b>công sai</b>. Muốn tìm công sai, lấy một số hạng trừ số hạng đứng ngay trước nó: $d = u_{n+1} - u_n$.</p>`
+      + note(R`Muốn chứng minh $(u_n)$ là cấp số cộng, ta chứng minh hiệu $u_{n+1} - u_n$ là một hằng số (không phụ thuộc $n$).`)
+      + ex(R`<b>Ví dụ 1.</b> Dãy nào là cấp số cộng? &nbsp;a) $1; -3; -7; -11; -15$ &nbsp;&nbsp;b) $1; -3; -6; -9; -12$`,
+           R`<p>a) Các hiệu đều bằng $-4$: là cấp số cộng với $d = -4$.</p><p>b) $-3 - 1 = -4$ nhưng $-6 - (-3) = -3$: không phải cấp số cộng.</p>`)
+      + ex(R`<b>Ví dụ 2.</b> Chứng minh dãy $u_n = 2n - 1$ là cấp số cộng.`,
+           R`<p>$u_{n+1} - u_n = \big[2(n + 1) - 1\big] - (2n - 1)$ $= 2$ không đổi.</p><p>Vậy $(u_n)$ là cấp số cộng với $u_1 = 1$, $d = 2$.</p>`) },
+
+  { id: "tinh-chat", title: "Tính chất ba số hạng liên tiếp",
+    html: def("Định lí", R`<p>Trong một cấp số cộng, kể từ số hạng thứ hai, mỗi số hạng là <b>trung bình cộng</b> của hai số hạng đứng kề nó:</p>`)
+      + formula(R`u_k = \frac{u_{k-1} + u_{k+1}}{2}`)
+      + note(R`<b>Hệ quả:</b> ba số $a, b, c$ (theo thứ tự đó) lập thành cấp số cộng $\iff a + c = 2b$.`)
+      + ex(R`<b>Ví dụ 3.</b> Tìm $x$ để $10 - 3x,\ 2x^2 + 3,\ 7 - 4x$ (theo thứ tự đó) lập thành cấp số cộng.`,
+           R`<p>$(10 - 3x) + (7 - 4x) = 2(2x^2 + 3)$ $\iff 17 - 7x = 4x^2 + 6$ $\iff 4x^2 + 7x - 11 = 0$.</p><p>$\Delta = 49 + 176 = 225$, nên $x = 1$ hoặc $x = -\dfrac{11}{4}$.</p><p>Thử với $x = 1$: ba số là $7, 5, 3$ (công sai $-2$). Đúng.</p>`) },
+
+  { id: "so-hang-tong-quat", title: "Số hạng tổng quát",
+    html: def("Định lí", R`<p>Nếu cấp số cộng có số hạng đầu $u_1$ và công sai $d$ thì:</p>`)
+      + formula(R`u_n = u_1 + (n - 1)\,d \qquad (n \ge 2)`)
+      + note(R`Nếu đề cho hai số hạng bất kì (ví dụ $u_5$ và $u_{21}$), hãy viết cả hai theo $u_1$ và $d$ rồi giải hệ hai phương trình.`)
+      + ex(R`<b>Ví dụ 4.</b> Cho cấp số cộng có $u_1 = 3$, $d = 4$. Tính $u_{20}$. Số $2025$ có phải là một số hạng của cấp số cộng không?`,
+           R`<p>$u_{20} = 3 + 19\cdot 4 = 79$.</p><p>Giả sử $u_n = 2025$: $3 + (n - 1)\cdot 4 = 2025$ $\iff n - 1 = 505{,}5$.</p><p>$n$ không phải số nguyên dương, nên $2025$ <b>không</b> là số hạng của cấp số cộng.</p>`) },
+
+  { id: "tong", title: "Tổng n số hạng đầu",
+    html: def("Định lí", R`<p>Gọi $S_n = u_1 + u_2 + \dots + u_n$ là tổng $n$ số hạng đầu của cấp số cộng. Khi đó:</p>`)
+      + formula(R`S_n = \frac{n\,(u_1 + u_n)}{2} = \frac{n\big[2u_1 + (n - 1)\,d\big]}{2}`)
+      + note(R`Dùng công thức đầu khi đã biết số hạng cuối $u_n$; dùng công thức sau khi chỉ biết $u_1$ và $d$.`)
+      + ex(R`<b>Ví dụ 5.</b> Tính tổng $1 + 2 + 3 + \dots + 100$.`,
+           R`<p>Đây là cấp số cộng $u_1 = 1$, $u_{100} = 100$.</p><p>$S_{100} = \dfrac{100\,(1 + 100)}{2} = 5050$.</p>`)
+      + ex(R`<b>Ví dụ 6.</b> Tính tổng $20$ số hạng đầu của cấp số cộng $5, 8, 11, \dots$`,
+           R`<p>$u_1 = 5$, $d = 3$.</p><p>$S_{20} = \dfrac{20\,(2\cdot 5 + 19\cdot 3)}{2}$ $= 10\cdot 67 = 670$.</p>`) },
+
+  { id: "thuc-te", title: "Vận dụng vào bài toán thực tế",
+    html: R`<p>Khi một đại lượng <b>tăng (hoặc giảm) đều</b> mỗi lần một lượng cố định thì đó là cấp số cộng: lương tăng thêm mỗi năm một khoản, mỗi hàng ghế nhiều hơn hàng trước vài ghế, mỗi bậc thang cao hơn bậc dưới…</p>
+      <ol><li>Xác định $u_1$ (giá trị ban đầu) và $d$ (lượng tăng mỗi lần, nếu giảm thì $d$ âm).</li>
+      <li>Hỏi giá trị tại lần thứ $n$: dùng $u_n$. Hỏi tổng cộng: dùng $S_n$.</li></ol>`
+      + ex(R`<b>Ví dụ 7.</b> Năm thứ nhất bác Tư nhận lương $240$ triệu đồng, từ năm thứ hai mỗi năm tăng thêm $12$ triệu. Tính lương năm thứ $11$.`,
+           R`<p>Lương các năm là cấp số cộng $u_1 = 240$, $d = 12$.</p><p>$u_{11} = 240 + 10\cdot 12 = 360$ triệu đồng.</p>`) }
+];
+
+const SUMMARY = R`<ul>
+  <li>Định nghĩa: $u_{n+1} = u_n + d$, công sai $d = u_{n+1} - u_n$.</li>
+  <li>Số hạng tổng quát: $u_n = u_1 + (n - 1)d$.</li>
+  <li>Ba số $a, b, c$ lập thành cấp số cộng $\iff a + c = 2b$.</li>
+  <li>Tổng: $S_n = \dfrac{n(u_1 + u_n)}{2}$ $= \dfrac{n\big[2u_1 + (n-1)d\big]}{2}$.</li>
+</ul>`;
+
+window.LESSON = { parts: PARTS, questions: QS, theory: THEORY, summary: SUMMARY };
 })();

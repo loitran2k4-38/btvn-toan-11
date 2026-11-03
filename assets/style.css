@@ -323,3 +323,82 @@ a.lesson:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px;
   .pn.next { grid-column: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .ch-side .chev { transition: none; } }
+
+/* ---------- Tab Lý thuyết / Bài tập */
+.tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 8px;
+}
+.tab {
+  font: 600 15px var(--font-body); padding: 9px 12px; border-radius: 6px; cursor: pointer;
+  background: transparent; color: var(--muted); border: 0;
+}
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+.tab:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.tab .n { font-weight: 500; opacity: .75; margin-left: 4px; font-size: 13px; }
+.rules { margin: 0; font-size: 15px; color: var(--muted); }
+
+/* ---------- Lý thuyết */
+.toc { background: var(--sheet); border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; }
+.toc-h { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.toc ol { margin: 0; padding-left: 22px; display: grid; gap: 2px; }
+.toc li::marker { color: var(--accent); font-weight: 700; }
+.toc-link {
+  font: 500 15px var(--font-body); color: var(--accent); background: none; border: 0; padding: 3px 0;
+  cursor: pointer; text-align: left;
+}
+.toc-link:hover { text-decoration: underline; }
+.toc-link:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+
+.th-sec, .th-summary {
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 6px;
+  padding: 20px 22px; display: grid; gap: 14px; min-width: 0; scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 16px);
+}
+.th-sec h2, .th-summary h2 { font-family: var(--font-display); font-size: 21px; margin: 0; display: flex; gap: 12px; align-items: center; text-wrap: balance; }
+.th-n {
+  flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); font-size: 15px;
+}
+.th-body { display: grid; gap: 12px; min-width: 0; }
+.th-body > p, .th-body p { margin: 0; }
+.th-body ul, .th-body ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+
+.def { background: var(--accent-soft); border-radius: 6px; padding: 12px 16px; display: grid; gap: 8px; min-width: 0; overflow-x: auto; }
+.def .lbl { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.formula {
+  background: var(--paper); border: 1.5px solid var(--line); border-radius: 6px; padding: 6px 12px;
+  overflow-x: auto; text-align: center;
+}
+.note { background: var(--warn-soft); border-radius: 6px; padding: 10px 14px; font-size: 15px; overflow-x: auto; }
+.note b:first-child { color: var(--warn); }
+
+.ex { border: 1.5px dashed var(--line); border-radius: 6px; padding: 12px 16px; display: grid; gap: 8px; min-width: 0; overflow-x: auto; }
+.ex-d > summary {
+  cursor: pointer; font-weight: 600; font-size: 15px; color: var(--accent); width: max-content; list-style: none;
+  padding: 4px 0;
+}
+.ex-d > summary::-webkit-details-marker { display: none; }
+.ex-d > summary::before { content: "▸ "; }
+.ex-d[open] > summary::before { content: "▾ "; }
+.ex-d[open] > summary { margin-bottom: 6px; }
+.ex-d > summary:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+.ex-sol { display: grid; gap: 6px; padding: 10px 14px; background: var(--paper); border-radius: 6px; }
+.ex-sol p { margin: 0; }
+
+.tbl { overflow-x: auto; }
+.tbl table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: 15px; }
+.tbl th, .tbl td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: middle; }
+.tbl thead th { background: var(--accent-soft); color: var(--accent); }
+.tbl tbody th { font-weight: 600; white-space: nowrap; }
+
+.th-summary { border: 2px solid var(--accent); }
+.cta { justify-self: center; padding: 12px 24px; font-size: 16px; }
+
+@media (max-width: 520px) {
+  .th-sec, .th-summary { padding: 16px 14px; }
+  .def, .ex { padding: 10px 12px; }
+}
+.th-sec, .th-summary, .th-body, .def, .ex, .ex-sol { grid-template-columns: minmax(0, 1fr); }
+.ex { overflow-x: visible; }
+.ex-q, .ex-sol, .th-body > ul, .th-body > ol, .th-body > p { overflow-x: auto; }

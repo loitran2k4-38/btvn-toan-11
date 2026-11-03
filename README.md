@@ -36,6 +36,26 @@ Thêm một khối vào `chapters` trong `data/catalog.js` theo đúng thứ t�
 { id: "c3", so: "Chương III", title: "Giới hạn. Hàm số liên tục", lessons: [ ... ] }
 ```
 
+## Lý thuyết của bài (không bắt buộc)
+
+Trong `data/<slug>.js`, khai báo `THEORY` và `SUMMARY` rồi đưa vào `window.LESSON`:
+
+```js
+const { def, formula, note, ex } = window.T;
+const THEORY = [
+  { id: "dinh-nghia", title: "Cấp số cộng là gì?",
+    html: def("Định nghĩa", R`<p>...</p>`)        // khung định nghĩa/định lí
+        + formula(R`u_n = u_1 + (n-1)d`)            // công thức lớn, ở giữa
+        + note(R`...`)                              // khung "Chú ý" (bắt đầu bằng <b>..</b> để tự đặt nhãn)
+        + ex(R`<b>Ví dụ 1.</b> Đề...`, R`<p>Lời giải...</p>`) }   // lời giải bấm mới mở
+];
+const SUMMARY = R`<ul><li>...</li></ul>`;          // khung "Ghi nhớ" cuối phần lý thuyết
+window.LESSON = { parts: PARTS, questions: QS, theory: THEORY, summary: SUMMARY };
+```
+
+Bài có lý thuyết sẽ có 2 tab: Lý thuyết (`#ly-thuyet`) và Bài tập (`#bai-tap`). Học sinh chưa làm câu nào thì mở tab Lý thuyết trước.
+Công thức nằm trong dòng không tự xuống dòng, nên chuỗi biến đổi dài hãy tách thành nhiều `$...$` (ví dụ `$A = B$ $\iff C = D$`).
+
 ## Định dạng câu hỏi
 
 - Trắc nghiệm: `{ type: "mc", opts: [...], correct: <chỉ số 0-based>, oneCol: true? }`
